@@ -1,0 +1,35 @@
+# Core Framework
+langchain
+langchain-core
+langchain-community
+
+# LLM Provider
+langchain-groq
+
+# Embeddings
+langchain-huggingface
+huggingface-hub
+
+# Vector Database
+langchain-chroma
+chromadb
+
+# PDF Processing
+pypdf
+pymupdf
+pillow
+
+# Text Splitters
+langchain-text-splitters
+
+# Utilities
+python-dotenv
+requests
+pydantic
+numpy
+
+# Frontend
+streamlit
+fastapi
+uvicorn
+dotenv

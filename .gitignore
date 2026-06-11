@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Environment Variables
+.env
+
+# ChromaDB / Vector Stores
+chroma_db/
+data/
+*.sqlite3
+
+# Uploaded PDFs
+uploads/
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Pytest
+.pytest_cache/
+
+# Build
+dist/
+build/
+*.egg-info/
