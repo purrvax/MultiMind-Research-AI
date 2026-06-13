@@ -1,0 +1,68 @@
+.fixed-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -50;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+}
+
+.bg-space-mesh {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.12), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(6, 182, 212, 0.12), transparent 50%);
+  opacity: 0.8;
+}
+
+.bg-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+
+.blob-cyan {
+  top: 10%;
+  left: -5%;
+  width: 600px;
+  height: 600px;
+  background-color: var(--cyan);
+  filter: blur(120px);
+  animation: blob-move-1 12s infinite alternate ease-in-out;
+}
+
+.blob-purple {
+  bottom: -10%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  background-color: var(--purple);
+  filter: blur(120px);
+  animation: blob-move-2 12s infinite alternate ease-in-out 3s;
+}
+
+.blob-blue {
+  top: 40%;
+  left: 30%;
+  width: 500px;
+  height: 500px;
+  background-color: var(--blue);
+  filter: blur(120px);
+  animation: blob-move-3 15s infinite alternate ease-in-out 6s;
+}
+
+.ambient-star {
+  position: absolute;
+  border-radius: 50%;
+}

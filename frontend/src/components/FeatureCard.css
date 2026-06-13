@@ -1,0 +1,85 @@
+.feature-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+}
+
+.feature-card.cyan {
+  border-color: rgba(6, 182, 212, 0.2);
+  background: linear-gradient(to bottom right, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.03));
+}
+.feature-card.cyan:hover {
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+}
+.feature-card.cyan .feature-icon-wrapper { color: var(--cyan); }
+
+.feature-card.purple {
+  border-color: rgba(168, 85, 247, 0.2);
+  background: linear-gradient(to bottom right, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.03));
+}
+.feature-card.purple:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+}
+.feature-card.purple .feature-icon-wrapper { color: var(--purple); }
+
+.feature-card.blue {
+  border-color: rgba(59, 130, 246, 0.2);
+  background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.03));
+}
+.feature-card.blue:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+.feature-card.blue .feature-icon-wrapper { color: var(--blue); }
+
+.feature-card.pink {
+  border-color: rgba(236, 72, 153, 0.2);
+  background: linear-gradient(to bottom right, rgba(236, 72, 153, 0.15), rgba(236, 72, 153, 0.03));
+}
+.feature-card.pink:hover {
+  border-color: rgba(236, 72, 153, 0.5);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.15);
+}
+.feature-card.pink .feature-icon-wrapper { color: var(--pink); }
+
+.feature-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+  transition: var(--transition-smooth);
+}
+
+.feature-card:hover .feature-icon-wrapper {
+  transform: scale(1.1);
+}
+
+.feature-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.feature-description {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
