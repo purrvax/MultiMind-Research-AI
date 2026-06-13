@@ -5,7 +5,7 @@ import './PaperCard.css';
 
 const PaperCard = ({ paper, onSelect }) => {
   const navigate = useNavigate();
-  const { title, year, citations, abstract, pdf_url } = paper;
+  const { title, year, citation_count, abstract, pdf_url } = paper;
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSelect = () => {
@@ -23,11 +23,11 @@ const PaperCard = ({ paper, onSelect }) => {
         <div className="paper-card-badges">
           <span className="badge-year">
             <Calendar style={{ width: '0.875rem', height: '0.875rem' }} />
-            <span>{year}</span>
+            <span>{year || "N/A"}</span>
           </span>
           <span className="badge-citations">
             <Bookmark style={{ width: '0.875rem', height: '0.875rem' }} />
-            <span>{citations.toLocaleString()} Citations</span>
+            <span>{citation_count? citation_count.toLocaleString() : 0} {" "}Citations</span>
           </span>
         </div>
 
@@ -37,7 +37,7 @@ const PaperCard = ({ paper, onSelect }) => {
         {/* Abstract - Collapsible */}
         <div className="paper-abstract-box">
           <p className={`paper-abstract-text ${isExpanded ? '' : 'clamped'}`}>
-            {abstract}
+            {abstract || "No abstract available"}
           </p>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
