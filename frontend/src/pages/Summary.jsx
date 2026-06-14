@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import ReactMarkdown from "react-markdown";
 import NoPaperSelected from '../components/NoPaperSelected';
 import { FileText, ArrowLeft, Lightbulb, Compass, Award, Download } from 'lucide-react';
 import './Summary.css';
@@ -7,11 +8,53 @@ import './Summary.css';
 const Summary = ({ activePaper }) => {
   const location = useLocation();
   const paper = location.state?.paper || activePaper;
+  const [summary, setSummary] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [hasGenerated, setHasGenerated] = useState(false);
+  const [style, setStyle] = useState("technical");
+  const [length, setLength] = useState("medium");
+  
 
   // If no paper is selected, render the empty state route protection
   if (!paper) {
     return <NoPaperSelected />;
   }
+  const fetchSummary = async () => {
+    try {
+      setLoading(true);
+      setHasGenerated(true);
+      const response = await fetch(
+        "http://localhost:8000/api/summary",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            paper_url: paper.pdf_url,
+            style,
+            length
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "Failed to generate summary"
+        );
+      }
+
+      setSummary(data.summary);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container-narrow" style={{ padding: '3rem 1.5rem', textAlign: 'left' }}>
@@ -28,139 +71,60 @@ const Summary = ({ activePaper }) => {
       </div>
 
       {/* Page Header */}
-      <div className="asset-header-section">
-        <span className="asset-badge cyan">
-          <FileText style={{ width: '1rem', height: '1rem' }} />
-          <span>Cognitive Asset // Executive Summary</span>
-        </span>
-        <h1 className="asset-title">
-          {paper.title}
-        </h1>
-        <p className="asset-meta">
-          Published {paper.year} • Synthesized by MultiMind AI Engine
-        </p>
+    <div className="summary-controls glass">
+
+      <select
+        value={style}
+        onChange={(e) => setStyle(e.target.value)}
+      >
+        <option value="beginner-friendly">
+          Beginner Friendly
+        </option>
+        <option value="technical">
+          Technical
+        </option>
+        <option value="code-oriented">
+          Code Oriented
+        </option>
+        <option value="mathematical">
+          Mathematical
+        </option>
+      </select>
+
+      <select
+        value={length}
+        onChange={(e) => setLength(e.target.value)}
+      >
+        <option value="concise">Concise</option>
+        <option value="medium">Medium</option>
+        <option value="detailed">Detailed</option>
+      </select>
+
+      <button
+        onClick={fetchSummary}
+        className="btn-export"
+      >
+        Generate Summary
+      </button>
+
+    </div>
+
+    {loading ? (
+      <div className="empty-results-card glass">
+        <h2>Generating Summary...</h2>
       </div>
-
-      {/* Main Content Layout */}
-      <div className="summary-card-group">
-        
-        {/* Key Findings Card */}
-        <div className="summary-block-card cyan">
-          <div 
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: '8rem',
-              height: '8rem',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(6, 182, 212, 0.03)',
-              filter: 'blur(32px)',
-              pointerEvents: 'none'
-            }} 
-          />
-          
-          <div className="summary-block-header">
-            <div className="summary-block-icon">
-              <Lightbulb style={{ width: '1.25rem', height: '1.25rem' }} className="text-glow-cyan" />
-            </div>
-            <h2 className="summary-block-title">Key Findings</h2>
-          </div>
-
-          <ul className="summary-list">
-            {paper.keyFindings?.map((finding, idx) => (
-              <li key={idx} className="summary-list-item">
-                <span className="list-index-circle">
-                  {idx + 1}
-                </span>
-                <p className="list-item-content">
-                  {finding}
-                </p>
-              </li>
-            )) || (
-              <p className="list-item-content" style={{ fontStyle: 'italic' }}>No findings available.</p>
-            )}
-          </ul>
-        </div>
-
-        {/* Methodology Card */}
-        <div className="summary-block-card purple">
-          <div 
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: '8rem',
-              height: '8rem',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(168, 85, 247, 0.03)',
-              filter: 'blur(32px)',
-              pointerEvents: 'none'
-            }} 
-          />
-
-          <div className="summary-block-header">
-            <div className="summary-block-icon">
-              <Compass style={{ width: '1.25rem', height: '1.25rem' }} className="text-glow-purple" />
-            </div>
-            <h2 className="summary-block-title">Methodology</h2>
-          </div>
-
-          <ul className="summary-list">
-            {paper.methodology?.map((method, idx) => (
-              <li key={idx} className="summary-list-item">
-                <span className="list-index-circle" />
-                <p className="list-item-content">
-                  {method}
-                </p>
-              </li>
-            )) || (
-              <p className="list-item-content" style={{ fontStyle: 'italic' }}>No methodology steps documented.</p>
-            )}
-          </ul>
-        </div>
-
-        {/* Contributions Card */}
-        <div className="summary-block-card blue">
-          <div 
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: '8rem',
-              height: '8rem',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(59, 130, 246, 0.03)',
-              filter: 'blur(32px)',
-              pointerEvents: 'none'
-            }} 
-          />
-
-          <div className="summary-block-header">
-            <div className="summary-block-icon">
-              <Award style={{ width: '1.25rem', height: '1.25rem' }} />
-            </div>
-            <h2 className="summary-block-title">Core Contributions</h2>
-          </div>
-
-          <ul className="summary-list">
-            {paper.contributions?.map((contribution, idx) => (
-              <li key={idx} className="summary-list-item">
-                <span className="list-index-circle" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: 'var(--blue)', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
-                  ✓
-                </span>
-                <p className="list-item-content">
-                  {contribution}
-                </p>
-              </li>
-            )) || (
-              <p className="list-item-content" style={{ fontStyle: 'italic' }}>No contributions listed.</p>
-            )}
-          </ul>
-        </div>
-
+    ) : error ? (
+      <div className="empty-results-card glass">
+        <h2>Failed to generate summary</h2>
+        <p>{error}</p>
       </div>
-
+    ) : (
+      <div className="summary-document glass">
+        <ReactMarkdown className="summary-content">
+          {summary}
+        </ReactMarkdown>
+      </div>
+    )}
       {/* Action panel */}
       <div className="summary-footer-actions">
         <button

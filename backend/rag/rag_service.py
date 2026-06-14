@@ -2,24 +2,24 @@
 RAG Service: builds vector DB + retrievers + document store + RAG engine
 """
 
-from backend.ai.chunker import DocumentChunker
-from backend.ai.embeddings import get_embedding_model
-from backend.ai.pdf_loader import load_pdf, download_pdf
-from backend.ai.text_cleaner import PDFCleaner
-from backend.ai.vector_store import (
+from ai.chunker import DocumentChunker
+from ai.embeddings import get_embedding_model
+from ai.pdf_loader import load_pdf, download_pdf
+from ai.text_cleaner import PDFCleaner
+from ai.vector_store import (
     create_vector_store,
     load_vector_store,
     vector_store_has_documents,
     get_all_documents,
     get_paper_persist_directory,
 )
-from backend.ai.retrievers.vector_retriever import VectorRetriever
-from backend.ai.retrievers.bm25_retriever import BM25Retriever
-from backend.ai.retrievers.hybrid_retriever import HybridRetriever
-from backend.ai.rerankers.cross_encoder import CrossEncoderReranker
-
-from backend.rag.rag_chain import ResearchPaperRAG
-from backend.DocStore.document_store import DocumentStore
+from ai.retrievers.vector_retriever import VectorRetriever
+from ai.retrievers.bm25_retriever import BM25Retriever
+from ai.retrievers.hybrid_retriever import HybridRetriever
+from ai.rerankers.cross_encoder import CrossEncoderReranker
+from rag.rag_cache import RAGCache
+from rag.rag_chain import ResearchPaperRAG
+from DocStore.document_store import DocumentStore
 
 class RAGBundle:
     """
@@ -28,16 +28,21 @@ class RAGBundle:
     - retriever
     - document store
     """
-    def __init__(self, rag, retriever, document_store):
+    def __init__(self, rag, retriever, document_store , paper_understanding = None):
         self.rag = rag
         self.retriever = retriever
         self.document_store = document_store
+        self.paper_understanding = paper_understanding
 
 
 class RAGService:
 
     @staticmethod
     def build(pdf_url: str):
+        cached_rag = RAGCache.get(pdf_url)
+        if cached_rag:
+            print("Returning cached RAG")
+            return cached_rag
         # -----------------------------
         # INIT MODELS
         # -----------------------------
@@ -105,8 +110,13 @@ class RAGService:
         # -----------------------------
         # FINAL CONTEXT WRAPPER
         # -----------------------------
-        return RAGBundle(
+        bundle = RAGBundle(
             rag=rag,
             retriever=hybrid_retriever,
-            document_store=document_store
+            document_store=document_store,
         )
+        RAGCache.set(
+            pdf_url,
+            bundle
+        )
+        return bundle

@@ -1,15 +1,11 @@
 """
 Core RAG object for retrieval + context building
 """
-
 class ResearchPaperRAG:
-
     def __init__(self, retriever):
         self.retriever = retriever
-
     def retrieve(self, query: str):
         return self.retriever.retrieve(query)
-
     def build_context(self, docs):
         """
         Convert retrieved documents into:

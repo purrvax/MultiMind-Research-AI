@@ -7,10 +7,11 @@ import FloatingBackground from './components/FloatingBackground';
 import Home from './pages/Home';
 import SearchPaper from './pages/SearchPaper';
 import Workspace from './pages/Workspace';
+import Workspace_Building from './pages/Workspace_Building';
 import Summary from './pages/Summary';
 import Notes from './pages/Notes';
 import Flashcards from './pages/Flashcards';
-import QnA from './pages/QnA';
+import QnA from './pages/QnA';''
 
 function App() {
   const [activePaper, setActivePaper] = useState(null);
@@ -53,6 +54,10 @@ function App() {
               path="/search-paper" 
               element={<SearchPaper setActivePaper={handleSetActivePaper} />} 
             />
+            <Route
+              path="/building-workspace"
+              element ={<Workspace_Building setActivePaper ={handleSetActivePaper}/>} 
+              />
             <Route 
               path="/workspace" 
               element={<Workspace activePaper={activePaper} setActivePaper={handleSetActivePaper} />} 

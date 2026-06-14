@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import NoPaperSelected from '../components/NoPaperSelected';
 import { Edit3, ArrowLeft, BookOpen, Layers, Award, Terminal } from 'lucide-react';
@@ -6,48 +6,118 @@ import './Notes.css';
 
 const Notes = ({ activePaper }) => {
   const location = useLocation();
+  const [notes, setNotes] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const paper = location.state?.paper || activePaper;
 
-  // If no paper is selected, render the empty state route protection
   if (!paper) {
     return <NoPaperSelected />;
+  }
+  useEffect(() => {
+  const fetchNotes = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/notes",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              paper_url: paper.pdf_url
+            })
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail);
+        }
+
+        setNotes(data.notes);
+
+      } catch (error) {
+        console.error(error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotes();
+  }, [paper]);
+
+  if (loading) {
+    return (
+      <div className="empty-results-card glass">
+        <h2>Generating Notes...</h2>
+        <p>Analyzing paper understanding and building study notes...</p>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="empty-results-card glass">
+        <h2>Failed to load notes</h2>
+        <p>{error}</p>
+      </div>
+    );
   }
 
   const noteSections = [
     {
-      id: "introduction",
-      title: "1. Introduction & Background",
-      content: paper.notes?.introduction || paper.introduction || "No introduction notes available.",
+      id: "problem",
+      title: "Problem",
+      content: notes?.problem,
       icon: BookOpen,
-      color: "border-accentCyan/30 text-accentCyan bg-accentCyan/5",
       class: "cyan"
     },
     {
       id: "methodology",
-      title: "2. Technical Methodology",
-      content: paper.notes?.methodology || "No methodology notes available.",
+      title: "Methodology",
+      content: notes?.methodology,
       icon: Layers,
-      color: "border-accentPurple/30 text-accentPurple bg-accentPurple/5",
       class: "purple"
     },
     {
-      id: "results",
-      title: "3. Experimental Results",
-      content: paper.notes?.results || "No results notes available.",
-      icon: Award,
-      color: "border-accentBlue/30 text-accentBlue bg-accentBlue/5",
+      id: "concepts",
+      title: "Key Concepts",
+      content: notes?.key_concepts,
+      icon: Layers,
       class: "blue"
     },
     {
-      id: "conclusion",
-      title: "4. Conclusion & Outlook",
-      content: paper.notes?.conclusion || "No conclusion notes available.",
+      id: "findings",
+      title: "Important Findings",
+      content: notes?.important_findings,
+      icon: Award,
+      class: "blue"
+    },
+    {
+      id: "limitations",
+      title: "Limitations",
+      content: notes?.limitations,
       icon: Terminal,
-      color: "border-pink-500/30 text-pink-500 bg-pink-500/5",
       class: "pink"
     },
+    {
+      id: "conclusion",
+      title: "Conclusion",
+      content: notes?.conclusion,
+      icon: Edit3,
+      class: "purple"
+    }
   ];
 
+  const visibleSections = noteSections.filter((sec) => {
+    if (Array.isArray(sec.content)) {
+      return sec.content.length > 0;
+    }
+
+    return sec.content && sec.content.trim() !== "";
+  });
   return (
     <div className="container-wide" style={{ padding: '3rem 1.5rem', textAlign: 'left' }}>
       {/* Back Link */}
@@ -64,16 +134,9 @@ const Notes = ({ activePaper }) => {
 
       {/* Page Header */}
       <div className="asset-header-section">
-        <span className="asset-badge purple">
-          <Edit3 style={{ width: '1rem', height: '1rem' }} />
-          <span>Cognitive Asset // Structured Study Notes</span>
-        </span>
         <h1 className="asset-title">
           {paper.title}
         </h1>
-        <p className="asset-meta">
-          Double-click any section to annotate or add custom notes.
-        </p>
       </div>
 
       {/* Main Layout: Sidebar + Notes */}
@@ -83,13 +146,13 @@ const Notes = ({ activePaper }) => {
         <aside className="notes-sidebar">
           <h3 className="sidebar-title">Note Index</h3>
           <nav className="sidebar-nav">
-            {noteSections.map((sec) => (
+            {visibleSections.map((sec) => (
               <a
                 key={sec.id}
                 href={`#${sec.id}`}
                 className="sidebar-nav-link"
               >
-                {sec.title.split('. ')[1]}
+                {sec.title}
               </a>
             ))}
           </nav>
@@ -97,7 +160,7 @@ const Notes = ({ activePaper }) => {
 
         {/* Notes Container */}
         <div className="notes-list-container">
-          {noteSections.map((sec) => {
+          {visibleSections.map((sec) => {
             const Icon = sec.icon;
             return (
               <section 
@@ -117,9 +180,17 @@ const Notes = ({ activePaper }) => {
                 </div>
 
                 {/* Content body */}
-                <p className="note-block-text">
-                  {sec.content}
-                </p>
+                {Array.isArray(sec.content) ? (
+                  <ul className="notes-list">
+                    {sec.content?.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="note-block-text">
+                    {sec.content}
+                  </p>
+                )}
 
                 {/* Micro-interaction decoration */}
                 <div className="note-block-decoration">

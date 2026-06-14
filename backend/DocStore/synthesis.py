@@ -1,12 +1,10 @@
 import json
 
-
 class PaperSynthesisService:
-
     def __init__(
         self,
         llm,
-        batch_size=10
+        batch_size= 5
     ):
         self.llm = llm
         self.batch_size = batch_size

@@ -1,8 +1,8 @@
 """
 QnA service for research paper RAG system
 """
-from backend.llm.llm import get_llm
-from backend.prompts.QnA_prompt import CONTEXTUAL_QA_PROMPT
+from llm.llm import get_llm
+from prompts.QnA_prompt import CONTEXTUAL_QA_PROMPT
 
 
 class QnAService:

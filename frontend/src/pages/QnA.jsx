@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import NoPaperSelected from '../components/NoPaperSelected';
-import { MessageSquare, ArrowLeft, Send, Cpu, User, Sparkles } from 'lucide-react';
+import {ArrowLeft, Send, Cpu, User, Sparkles } from 'lucide-react';
 import './QnA.css';
 
 const QnA = ({ activePaper }) => {
@@ -26,7 +26,7 @@ const QnA = ({ activePaper }) => {
         {
           id: 'welcome',
           sender: 'ai',
-          text: `Hello! I am MultiMind Research AI, optimized to discuss "${paper.title}". Feel free to ask me any question about this research.`,
+          text: `Hello! I'm your MultiMind Research Assistant. I've analyzed "${paper.title}" and can answer questions about its methodology, findings, contributions, experiments, limitations, and technical details.`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -38,70 +38,75 @@ const QnA = ({ activePaper }) => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  const handleSend = (e) => {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
+  const handleSend = async (e) => {
+  e.preventDefault();
 
-    const userMessageText = inputValue.trim();
-    setInputValue('');
+  if (!inputValue.trim() || isTyping) return;
 
-    const userMessage = {
-      id: `user-${Date.now()}`,
-      sender: 'user',
-      text: userMessageText,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const question = inputValue.trim();
+
+  const userMessage = {
+    id: `user-${Date.now()}`,
+    sender: "user",
+    text: question,
+    timestamp: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+  };
+
+  setMessages((prev) => [...prev, userMessage]);
+  setInputValue("");
+  setIsTyping(true);
+
+  try {
+    const response = await fetch(
+      "http://localhost:8000/api/qna",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          paper_url: paper.pdf_url,
+          query: question
+        })
+      }
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(
+        data.detail || "Failed to get answer");
+    }
+    const aiMessage = {
+      id: `ai-${Date.now()}`,
+      sender: "ai",
+      text: data.answer,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setIsTyping(true);
+    setMessages((prev) => [...prev, aiMessage]);
+  } catch (error) {
+    console.error("QnA Error:", error);
 
-    // AI Response Generation Logic
-    setTimeout(() => {
-      let replyText = "";
-      const lowerInput = userMessageText.toLowerCase();
+    const errorMessage = {
+      id: `error-${Date.now()}`,
+      sender: "ai",
+      text: "Sorry, I couldn't answer your question right now.",
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    };
 
-      // 1. Try to find match in Q&A Pairs
-      const matchedQna = paper.qnaPairs?.find(qna => 
-        lowerInput.includes(qna.question.toLowerCase()) || 
-        qna.question.toLowerCase().split(' ').filter(w => w.length > 4).some(w => lowerInput.includes(w))
-      );
-
-      // 2. Try to find match in Flashcards
-      const matchedFlash = paper.flashcards?.find(fc => 
-        lowerInput.includes(fc.question.toLowerCase()) ||
-        fc.question.toLowerCase().split(' ').filter(w => w.length > 4).some(w => lowerInput.includes(w))
-      );
-
-      if (matchedQna) {
-        replyText = matchedQna.answer;
-      } else if (matchedFlash) {
-        replyText = matchedFlash.answer;
-      } else if (lowerInput.includes('abstract') || lowerInput.includes('summary') || lowerInput.includes('overview')) {
-        replyText = `Here is the summary of the paper's abstract: ${paper.abstract}`;
-      } else if (lowerInput.includes('year') || lowerInput.includes('published') || lowerInput.includes('date')) {
-        replyText = `"${paper.title}" was published in the year ${paper.year}.`;
-      } else if (lowerInput.includes('citation') || lowerInput.includes('citations') || lowerInput.includes('cited')) {
-        replyText = `According to our index, this paper has been cited approximately ${paper.citations.toLocaleString()} times in scientific literature.`;
-      } else if (lowerInput.includes('methodology') || lowerInput.includes('method') || lowerInput.includes('how did they')) {
-        replyText = `Based on the paper's methodology section, the authors utilized the following approach: \n\n${paper.methodology?.map(m => `• ${m}`).join('\n') || paper.notes?.methodology}`;
-      } else if (lowerInput.includes('contribution') || lowerInput.includes('novelty') || lowerInput.includes('impact')) {
-        replyText = `The main scientific contributions of this research are: \n\n${paper.contributions?.map(c => `• ${c}`).join('\n') || "Establishing new theoretical frameworks and testing them extensively."}`;
-      } else {
-        // Fallback dynamic response
-        replyText = `Regarding your query about "${userMessageText}" in "${paper.title}": The paper primarily addresses this through its proposed optimization paradigms. More specifically, the authors highlight that by reorganizing layer dependencies and utilizing their methodology (which achieved ${paper.citations.toLocaleString()} citations), they mitigate standard bottlenecks. Let me know if you would like me to detail the findings, methodology, or results sections!`;
-      }
-
-      const aiMessage = {
-        id: `ai-${Date.now()}`,
-        sender: 'ai',
-        text: replyText,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
-      setIsTyping(false);
-    }, 1200); // Realistic AI thinking delay
-  };
+    setMessages((prev) => [...prev, errorMessage]);
+  } finally {
+    setIsTyping(false);
+  }
+};
 
   const presetQuestions = [
     "What is the core methodology?",

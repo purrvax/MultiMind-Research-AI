@@ -1,3 +1,10 @@
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
 .notes-layout-row {
   display: flex;
   flex-direction: column;
@@ -139,4 +146,36 @@
   background-color: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.notes-list {
+  margin: 0;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.notes-list li {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.empty-results-card {
+  max-width: 700px;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.empty-results-card h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+}
+
+.empty-results-card p {
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
 }

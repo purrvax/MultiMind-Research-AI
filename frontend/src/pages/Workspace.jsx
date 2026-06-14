@@ -111,10 +111,10 @@ const Workspace = ({ activePaper, setActivePaper }) => {
             <div className="workspace-hero-metadata">
               <span className="badge-published">
                 <Calendar style={{ width: '0.875rem', height: '0.875rem' }} />
-                <span>Published {paper.year}</span>
+                <span>Published {paper.year || "N.A"}</span>
               </span>
               <span className="badge-gray">
-                {paper.citations.toLocaleString()} Citations
+                  {paper.citation_count?.toLocaleString() || 0} Citations
               </span>
             </div>
 

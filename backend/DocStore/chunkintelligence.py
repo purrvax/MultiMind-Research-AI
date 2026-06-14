@@ -1,12 +1,10 @@
 import re
-
-
 class ChunkIntelligenceEngine:
 
     def __init__(
         self,
         llm,
-        batch_size=10,
+        batch_size=5,
         chunk_char_limit=2500
     ):
         self.llm = llm
@@ -17,9 +15,7 @@ class ChunkIntelligenceEngine:
         self,
         chunks
     ):
-
         structured_chunks = []
-
         total_batches = (
             len(chunks) + self.batch_size - 1
         ) // self.batch_size

@@ -142,4 +142,6 @@ Requirements:
 - Respect the requested length.
 """
 
-        return self.llm.invoke(prompt).content
+        return {
+    "summary": self.llm.invoke(prompt).content
+    }

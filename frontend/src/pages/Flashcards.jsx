@@ -8,14 +8,55 @@ import './Flashcards.css';
 const Flashcards = ({ activePaper }) => {
   const location = useLocation();
   const paper = location.state?.paper || activePaper;
-
+  const [topic, setTopic] = useState("mixed");
+  const [difficulty, setDifficulty] = useState("medium");
+  const [count, setCount] = useState(10);
+  const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
   // If no paper is selected, render the empty state route protection
   if (!paper) {
     return <NoPaperSelected />;
   }
 
-  const cards = paper.flashcards || [];
+  const handleGenerate = async () => {
+  try {
+    setLoading(true);
+    setHasGenerated(true);
+    const response = await fetch(
+      "http://localhost:8000/api/flashcards",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          paper_url: paper.pdf_url,
+          topic,
+          difficulty,
+          count
+        })
+      }
+    );
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.detail || "Failed to generate flashcards"
+      );
+    }
+
+    setCards(data.flashcards || []);
+    setStudiedCount(0);
+    setStudiedSet(new Set());
+  } catch (error) {
+    console.error(error);
+    alert("Failed to generate flashcards");
+  } finally {
+    setLoading(false);
+  }
+};
   // Keep track of how many cards have been flipped/studied
   const [studiedCount, setStudiedCount] = useState(0);
   const [studiedSet, setStudiedSet] = useState(new Set());
@@ -44,12 +85,60 @@ const Flashcards = ({ activePaper }) => {
       </div>
 
       {/* Page Header */}
+      <div className="flashcard-generator glass">
+  <h3>Generate Flashcards</h3>
+
+  <div className="flashcard-generator-row">
+    <div className='control-group'> 
+    <select
+      value={topic}
+      onChange={(e) => setTopic(e.target.value)}
+    >
+      <option value="mixed">Mixed</option>
+      <option value="methodology">Methodology</option>
+      <option value="results">Results</option>
+      <option value="contributions">Contributions</option>
+      <option value="limitations">Limitations</option>
+      <option value="experiments">Experiments</option>
+    </select>
+  </div>
+  <div className='contorl-group'>
+    <label>Difficulty</label>
+    <select
+      value={difficulty}
+      onChange={(e) => setDifficulty(e.target.value)}
+    >
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+    </div>
+    <div className='control-group'>
+      <label>Counts</label>
+    <select
+      value={count}
+      onChange={(e) => setCount(Number(e.target.value))}
+    >
+      <option value={5}>5</option>
+      <option value={10}>10</option>
+      <option value={15}>15</option>
+      <option value={20}>20</option>
+    </select>
+    </div>
+    <button
+      onClick={handleGenerate}
+      disabled={loading}
+      className="generate-flashcards-btn"
+    >
+      {loading
+        ? "Generating..."
+        : "Generate Flashcards"}
+    </button>
+
+  </div>
+</div>
       <div className="flashcards-header-row">
         <div>
-          <span className="asset-badge blue">
-            <Layers style={{ width: '1rem', height: '1rem' }} />
-            <span>Cognitive Asset // Q&A Flashcards</span>
-          </span>
           <h1 className="asset-title">
             {paper.title}
           </h1>
@@ -73,7 +162,7 @@ const Flashcards = ({ activePaper }) => {
               <div className="progress-bar-track">
                 <div 
                   className="progress-bar-fill"
-                  style={{ width: `${(studiedCount / cards.length) * 100}%` }}
+                  style={{ width: `${cards.length ? (studiedCount / cards.length) * 100: 0}%` }}
                 />
               </div>
             </div>
@@ -82,7 +171,16 @@ const Flashcards = ({ activePaper }) => {
       </div>
 
       {/* Grid of Flashcards */}
-      {cards.length > 0 ? (
+      {loading ? (
+        <div className="empty-results-card glass">
+          <h3 className="empty-results-title">
+            Generating Flashcards...
+          </h3>
+          <p className="empty-results-desc">
+            Creating personalized study cards from the paper.
+          </p>
+        </div>
+      ) : cards.length > 0 ? (
         <div className="flashcards-grid">
           {cards.map((card, idx) => (
             <div key={idx} onClick={() => handleCardClick(idx)}>
@@ -93,12 +191,23 @@ const Flashcards = ({ activePaper }) => {
             </div>
           ))}
         </div>
+      ) : !hasGenerated ? (
+        <div className="empty-results-card glass">
+          <h3 className="empty-results-title">
+            Generate Flashcards
+          </h3>
+          <p className="empty-results-desc">
+            Choose topic, difficulty and number of cards,
+            then click Generate Flashcards.
+          </p>
+        </div>
       ) : (
         <div className="empty-results-card glass">
-          <Layers className="empty-results-icon" style={{ width: '3rem', height: '3rem' }} />
-          <h3 className="empty-results-title">No flashcards found</h3>
+          <h3 className="empty-results-title">
+            No flashcards found
+          </h3>
           <p className="empty-results-desc">
-            We couldn't generate study cards for this paper. Try selecting another item.
+            Try another topic or difficulty level.
           </p>
         </div>
       )}

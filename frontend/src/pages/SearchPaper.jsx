@@ -30,6 +30,7 @@ const SearchPaper = ({ setActivePaper }) => {
         query: searchQuery,
         limit: selectedLimit
     });
+
     try{
       const response = await fetch(
         "http://localhost:8000/api/search-papers",
@@ -122,8 +123,8 @@ const SearchPaper = ({ setActivePaper }) => {
   }}
                 className="limit-select"
               >
-                <option value={3}>3</option>
-                <option value={5}>10</option>
+                <option value={5}>5</option>
+                <option value={10}>10</option>
                 <option value={15}>15</option>
                 <option value={20}>20</option>
               </select>

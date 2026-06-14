@@ -9,11 +9,9 @@ const PaperCard = ({ paper, onSelect }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSelect = () => {
-    if (onSelect) {
-      onSelect(paper);
-    }
-    // Navigate to workspace and pass the paper state
-    navigate('/workspace', { state: { paper } });
+    navigate("/building-workspace", {
+      state: {paper}
+    });
   };
 
   return (
@@ -74,7 +72,7 @@ const PaperCard = ({ paper, onSelect }) => {
         )}
         
         <button
-          onClick={handleSelect}
+          onClick = {handleSelect}
           className="btn-primary"
         >
           <span>Select Paper</span>

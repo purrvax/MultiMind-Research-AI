@@ -9,14 +9,7 @@ from backend.services.QnA_service import QnAService
 from backend.services.summary_service import SummaryService
 from backend.services.notes_service import NotesService
 from backend.services.flashcard_service import FlashcardService
-
-from backend.DocStore.synthesis import (
-    PaperSynthesisService
-)
-
-from backend.DocStore.chunkintelligence import (
-    ChunkIntelligenceEngine
-)
+from backend.DocStore.paper_understaning import PaperUnderstandingService
 
 from backend.llm.llm import get_llm
 
@@ -26,97 +19,31 @@ llm = get_llm()
 
 print("LETS START")
 
-# --------------------------------------------------
-# 1. SEARCH PAPER
-# --------------------------------------------------
-
 papers = PaperService.search("Attention is all you need")
-
 paper_url = papers[0]["pdf_url"]
-
 print("\n📄 Paper URL:")
 print(paper_url)
 
-# --------------------------------------------------
-# 2. BUILD RAG
-# --------------------------------------------------
-
-context = RAGService.build(
-    paper_url
+bundle = RAGService.build(paper_url)
+print("RAG built successfully")
+understanding_service = (
+    PaperUnderstandingService(llm)
 )
+paper_understanding = (
+    understanding_service.generate(
+        bundle.document_store
+    )
+)
+pprint(paper_understanding)
 
-rag = context.rag
-doc_store = context.document_store
-
-print("\n✅ RAG built successfully")
-
-# --------------------------------------------------
-# 3. QnA TEST
-# --------------------------------------------------
-
-qna = QnAService(rag)
-
+qna = QnAService(bundle.rag)
 qna_result = qna.answer(
     "Explain Transformer Architecture?"
 )
-
 print("\nQnA Answer:")
 print(qna_result["answer"])
 
-# --------------------------------------------------
-# 4. CHUNK INTELLIGENCE
-# --------------------------------------------------
-
-print("\n🧠 Running Chunk Intelligence...")
-
-engine = ChunkIntelligenceEngine(
-    llm=llm,
-    batch_size=10
-)
-
-structured_chunks = (
-    engine.process_chunks(
-        doc_store.chunks
-    )
-)
-
-print(
-    f"\n✅ Structured Chunks Generated: "
-    f"{len(structured_chunks)}"
-)
-print("\nFIRST STRUCTURED CHUNK")
-pprint(structured_chunks[0])
-# --------------------------------------------------
-# 5. PAPER SYNTHESIS
-# --------------------------------------------------
-
-print("\n📖 Synthesizing Paper Understanding...")
-
-synthesis_service = (
-    PaperSynthesisService(
-        llm=llm
-    )
-)
-
-paper_understanding = (
-    synthesis_service.synthesize(
-        structured_chunks
-    )
-)
-
-print("\n✅ Paper Understanding Generated")
-
-pprint(
-    paper_understanding
-)
-
-# --------------------------------------------------
-# 6. SUMMARY
-# --------------------------------------------------
-
-summary_service = SummaryService(
-    llm
-)
+summary_service = SummaryService(llm)
 
 summary = summary_service.generate(
     paper_understanding=paper_understanding,
@@ -128,12 +55,7 @@ print("\n📝 SUMMARY")
 print("=" * 80)
 print(summary)
 
-# --------------------------------------------------
-# 7. NOTES
-# --------------------------------------------------
-
 notes_service = NotesService()
-
 notes_result = (
     notes_service.generate_notes(
         paper_understanding
@@ -145,11 +67,6 @@ print("=" * 80)
 print(
     notes_result["notes"]
 )
-
-# --------------------------------------------------
-# 8. HIGHLIGHTS
-# --------------------------------------------------
-
 print("\n⭐ HIGHLIGHTS")
 print("=" * 80)
 
@@ -157,14 +74,7 @@ pprint(
     notes_result["highlights"]
 )
 
-# --------------------------------------------------
-# 9. FLASHCARDS
-# --------------------------------------------------
-
-flashcard_service = FlashcardService(
-    rag
-)
-
+flashcard_service = FlashcardService(bundle.rag)
 flashcards = (
     flashcard_service.generate_flashcards(
         count=5,

@@ -2,21 +2,22 @@
 Flashcard generation service using RAG retrieval
 """
 import json
-from backend.llm.llm import get_llm
-from backend.prompts.flashcard_prompt import FLASHCARD_PROMPT
+from llm.llm import get_llm
+from prompts.flashcard_prompt import FLASHCARD_PROMPT
 class FlashcardService:
     def __init__(self, rag):
         self.rag = rag
         llm = get_llm()
         self.flashcard_chain = FLASHCARD_PROMPT | llm
+        
     def generate_flashcards(
         self,
-        question: str,
+        topic: str,
         difficulty: str = "medium",
         count: int = 10,
     ) -> list[dict]:
         context, _ = (
-        self.rag.get_context(question)
+        self.rag.get_context(topic)
         )
         response = self.flashcard_chain.invoke(
             {

@@ -1,4 +1,4 @@
-from backend.ai.document_search import paper_search
+from ai.document_search import paper_search
 class PaperService:
 
     @staticmethod
