@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from rag.rag_cache import RAGCache
 from services.notes_service import NotesService
+from llm.llm import get_llm
 
 router = APIRouter()
 
@@ -19,9 +20,9 @@ def generate_notes(request : NotesRequest):
             raise Exception("Paper not analyzed yet. Run analyze-paper first.")
         if bundle.paper_understanding is None:
             raise Exception("Paper understanding is missing.")
-        
+        llm = get_llm()
         paper_understanding = bundle.paper_understanding
-        notes_service = NotesService()
+        notes_service = NotesService(llm)
         result = notes_service.generate(
             paper_understanding=paper_understanding
         )

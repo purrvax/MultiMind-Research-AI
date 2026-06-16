@@ -1,6 +1,7 @@
 from pathlib import Path
 import shutil
 import hashlib
+import json
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 
@@ -226,7 +227,6 @@ def get_paper_persist_directory(pdf_url: str):
 
     return f"data/vectorstores/{paper_id}"
 
-
 # -------------------------------------------------
 # STABLE CHUNK ID
 # -------------------------------------------------
@@ -249,5 +249,44 @@ def _stable_chunk_id(chunk):
         str(chunk_index),
         content,
     ])
+# -------------------------------------------------
+# PAPER UNDERSTANDING
+# -------------------------------------------------
+
+def save_paper_understanding(
+    pdf_url: str,
+    paper_understanding: dict
+):
+    persist_dir = Path(get_paper_persist_directory(pdf_url))
+    persist_dir.mkdir(parents=True,exist_ok=True)
+    file_path = (persist_dir /"paper_understanding.json")
+    with open(
+        file_path,
+        "w",
+        encoding="utf-8"
+    ) as f:
+        json.dump(
+            paper_understanding,
+            f,
+            indent=2,
+            ensure_ascii=False
+        )
+
+def load_paper_understanding(
+    pdf_url: str
+):
+    file_path = (Path(get_paper_persist_directory(pdf_url))
+        / "paper_understanding.json"
+    )
+
+    if not file_path.exists():
+        return None
+
+    with open(
+        file_path,
+        "r",
+        encoding="utf-8"
+    ) as f:
+        return json.load(f)
 
     return hashlib.sha256(raw_id.encode("utf-8")).hexdigest()

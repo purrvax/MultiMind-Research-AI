@@ -41,3 +41,7 @@ app.include_router(
     QnA.router,
     prefix="/api"
 )
+app.include_router(
+    summary.router,
+    prefix = "/api"
+)

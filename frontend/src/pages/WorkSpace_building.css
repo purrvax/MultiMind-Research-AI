@@ -83,3 +83,12 @@
     transform: rotate(360deg);
   }
 }
+.cancel-build-btn {
+  margin-top: 1.5rem;
+  padding: 0.8rem 1.4rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+}

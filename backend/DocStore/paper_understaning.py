@@ -7,7 +7,6 @@ class PaperUnderstandingService:
 
     def generate(self, document_store):
         print("Running Chunk Intelligence...")
-
         engine = ChunkIntelligenceEngine(
             llm=self.llm,
             batch_size=5

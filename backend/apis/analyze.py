@@ -1,36 +1,56 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+
 from rag.rag_service import RAGService
 from DocStore.paper_understaning import PaperUnderstandingService
 from llm.llm import get_llm
-from rag.rag_cache import RAGCache
+from ai.vector_store import save_paper_understanding
 
 router = APIRouter()
 
 class PaperRequest(BaseModel):
     paper_url: str
 
-
 @router.post("/analyze-paper")
 def analyze_paper(request: PaperRequest):
-
     try:
-        # Build RAG context
+        print("REQUEST RECEIVED")
+        print(f"Analyzing paper: {request.paper_url}")
         bundle = RAGService.build(request.paper_url)
+        if bundle.paper_understanding is not None:
+            print("Returning cached paper understanding")
+            return {
+                "status": "success",
+                "message":"Paper analysis loaded from cache",
+                "analysis":bundle.paper_understanding,
+            }
+        print("Generating paper understanding...")
         llm = get_llm()
-        # Process chunks
         service = PaperUnderstandingService(llm)
-        paper_understanding = service.generate(bundle.document_store)
-        
-        bundle.paper_understanding = paper_understanding
-        RAGCache.set(request.paper_url,bundle)
-        return {
-            "status":"success",
-            "message": "Paper Analyzed",
-            "analysis": paper_understanding
+        bundle.paper_understanding = (
+            service.generate(bundle.document_store)
+        )
+        save_paper_understanding(
+            request.paper_url,
+            bundle.paper_understanding
+        )
+
+        print("Paper understanding generated successfully")
+
+        result = {
+            "status": "success",
+            "message":"Paper analyzed successfully",
+            "analysis":bundle.paper_understanding,
         }
+        print("RETURNING RESPONSE")
+        return result
+
     except Exception as e:
+        print(
+            f"Paper analysis failed: {str(e)}"
+        )
+
         raise HTTPException(
             status_code=500,
-            detail=str(e)
+            detail=str(e),
         )

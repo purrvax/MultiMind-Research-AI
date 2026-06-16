@@ -11,7 +11,7 @@ import Workspace_Building from './pages/Workspace_Building';
 import Summary from './pages/Summary';
 import Notes from './pages/Notes';
 import Flashcards from './pages/Flashcards';
-import QnA from './pages/QnA';''
+import QnA from './pages/QnA';
 
 function App() {
   const [activePaper, setActivePaper] = useState(null);

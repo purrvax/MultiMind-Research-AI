@@ -59,14 +59,17 @@ Technical:
 - Preserve terminology from the paper.
 - Explain methodology, architecture, and findings.
 - Suitable for engineers and researchers.
-
-Code-Oriented:
-- Focus on workflows, architectures, pipelines,
-  implementation details, and algorithms.
+- Explain all technical terms.
 
 Mathematical:
 - Focus on equations, objective functions,
   derivations, proofs, and theoretical analysis.
+- Proivde all mathematical expressions present with need
+- For mathematical expressions:
+- Use LaTeX notation.
+- Inline equations: $...$
+- Display equations: $$...$$
+- Never write equations as plain text.
 
 ==================================================
 LENGTH GUIDELINES

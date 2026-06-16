@@ -1,47 +1,23 @@
 import json
 
 class PaperSynthesisService:
-    def __init__(
-        self,
-        llm,
-        batch_size= 5
-    ):
+    def __init__(self,llm,batch_size= 5):
         self.llm = llm
         self.batch_size = batch_size
 
-    def synthesize(
-        self,
-        structured_chunks
-    ):
+    def synthesize(self,structured_chunks):
 
         batch_summaries = []
-
-        for i in range(
-            0,
-            len(structured_chunks),
-            self.batch_size
-        ):
-
-            batch = structured_chunks[
-                i:i + self.batch_size
-            ]
-
-            result = self._synthesize_batch(
-                batch
-            )
-
+        for i in range(0,len(structured_chunks),self.batch_size):
+            batch = structured_chunks[i:i + self.batch_size]
+            result = self._synthesize_batch(batch)
             if result:
-                batch_summaries.append(
-                    result
-                )
-
+                batch_summaries.append(result)
         if not batch_summaries:
             return {}
-
         return self._global_synthesis(
             batch_summaries
         )
-
     def _synthesize_batch(
         self,
         batch
@@ -103,9 +79,7 @@ Rules:
 
 {text}
 """
-
         try:
-
             response = (
                 self.llm
                 .invoke(prompt)

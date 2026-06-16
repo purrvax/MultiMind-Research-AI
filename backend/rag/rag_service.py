@@ -12,6 +12,8 @@ from ai.vector_store import (
     vector_store_has_documents,
     get_all_documents,
     get_paper_persist_directory,
+    save_paper_understanding,
+    load_paper_understanding
 )
 from ai.retrievers.vector_retriever import VectorRetriever
 from ai.retrievers.bm25_retriever import BM25Retriever
@@ -48,6 +50,7 @@ class RAGService:
         # -----------------------------
         embedding_model = get_embedding_model()
         persist_dir = get_paper_persist_directory(pdf_url)
+        paper_understanding = load_paper_understanding(pdf_url)
         # -----------------------------
         # LOAD OR CREATE VECTOR STORE
         # -----------------------------
@@ -107,13 +110,11 @@ class RAGService:
         # DOCUMENT STORE (SHARED STATE)
         # -----------------------------
         document_store = DocumentStore(chunks)
-        # -----------------------------
-        # FINAL CONTEXT WRAPPER
-        # -----------------------------
         bundle = RAGBundle(
             rag=rag,
             retriever=hybrid_retriever,
             document_store=document_store,
+            paper_understanding=paper_understanding
         )
         RAGCache.set(
             pdf_url,
