@@ -1,11 +1,17 @@
+.chat-box {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  min-height: 0;
+}
 .chat-page-wrapper {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 75px);
-  width: 200rem;
+  width: 100%;
+  max-width:none;
+  margin : 0px;
   margin : 10px;
-  margin-right: 0px;
-  margin-left: 0px;
 }
 
 .chat-panel-container {
@@ -18,6 +24,7 @@
   background: linear-gradient(to bottom, #060714, rgba(4, 4, 10, 0.8));
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   position: relative;
+  width : 100%
 }
 
 .chat-messages-area {

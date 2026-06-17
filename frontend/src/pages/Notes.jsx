@@ -78,6 +78,7 @@ const Notes = ({ activePaper }) => {
 
   if (loading) {
     return (
+      <div className='loading-page'>
       <div className="empty-results-card glass">
         <div className="spinner-container">
           <div className="loader-ring"></div>
@@ -85,11 +86,13 @@ const Notes = ({ activePaper }) => {
         <h2>Generating Study Notes...</h2>
         <p className="loading-subtext">Analyzing paper mechanics, terminology, and synthesizing revision questions...</p>
       </div>
+      </div>
     );
   }
 
   if (error) {
     return (
+      <div className='loading-page'>
       <div className="empty-results-card error-card glass">
         <div className="error-icon-box">
           <AlertTriangle style={{ width: '2rem', height: '2rem', color: 'var(--pink)' }} />
@@ -99,6 +102,7 @@ const Notes = ({ activePaper }) => {
         <Link to="/workspace" state={{ paper }} className="btn-return-workspace" style={{ marginTop: '1.5rem', display: 'inline-block' }}>
           Back to Workspace
         </Link>
+      </div>
       </div>
     );
   }
@@ -212,35 +216,7 @@ const Notes = ({ activePaper }) => {
         <h1 className="asset-title">
           {paper.title}
         </h1>
-        <p className="asset-subtitle">Interactive Exam Study Companion</p>
       </div>
-
-      {/* Highlights Dashboard */}
-      {highlights && (
-        <div className="highlights-dashboard glass">
-          <div className="highlights-header">
-            <h3>Quick Highlights</h3>
-          </div>
-          <div className="highlights-metrics-row">
-            <div className="metric-box">
-              <span className="metric-value">{highlights.total_concepts || 0}</span>
-              <span className="metric-label">Key Concepts</span>
-            </div>
-            <div className="metric-box">
-              <span className="metric-value">{highlights.total_findings || 0}</span>
-              <span className="metric-label">Key Findings</span>
-            </div>
-            <div className="highlight-terms-preview">
-              <span className="preview-label">Core Coverage:</span>
-              <div className="preview-tags">
-                {highlights.key_concepts?.slice(0, 4).map((concept, idx) => (
-                  <span key={idx} className="preview-tag">{concept}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Main Layout: Sidebar + Notes */}
       <div className="notes-layout-row">
@@ -274,12 +250,8 @@ const Notes = ({ activePaper }) => {
                 {/* Header block */}
                 <div className="note-card-header">
                   <div className="note-card-title-group">
-                    <div className="note-block-icon-box">
-                      <Icon style={{ width: '1.25rem', height: '1.25rem' }} />
-                    </div>
                     <h2 className="note-section-title">{sec.title}</h2>
                   </div>
-                  <span className="read-only-badge">Study Reference</span>
                 </div>
 
                 {/* Content rendering per section schema */}
@@ -314,7 +286,7 @@ const Notes = ({ activePaper }) => {
                     <div className="revision-sheet-layout">
                       {notes?.quick_revision_sheet?.must_remember && notes.quick_revision_sheet.must_remember.length > 0 && (
                         <div className="revision-column must-remember">
-                          <h4>⚠️ Must Remember</h4>
+                          <h4>Must Remember</h4>
                           <ul>
                             {notes.quick_revision_sheet.must_remember.map((item, i) => (
                               <li key={i}>{item}</li>
@@ -325,7 +297,7 @@ const Notes = ({ activePaper }) => {
 
                       {notes?.quick_revision_sheet?.key_takeaways && notes.quick_revision_sheet.key_takeaways.length > 0 && (
                         <div className="revision-column key-takeaways">
-                          <h4>🎯 Key Takeaways</h4>
+                          <h4> Key Takeaways</h4>
                           <ul>
                             {notes.quick_revision_sheet.key_takeaways.map((item, i) => (
                               <li key={i}>{item}</li>
@@ -336,7 +308,7 @@ const Notes = ({ activePaper }) => {
 
                       {notes?.quick_revision_sheet?.important_terms && notes.quick_revision_sheet.important_terms.length > 0 && (
                         <div className="revision-column important-terms">
-                          <h4>🔑 Important Terms</h4>
+                          <h4>Important Terms</h4>
                           <div className="terms-glossary">
                             {notes.quick_revision_sheet.important_terms.map((term, i) => (
                               <span key={i} className="glossary-term">{term}</span>
@@ -438,20 +410,9 @@ const Notes = ({ activePaper }) => {
                           {concept.example && (
                             <div className="study-callout example-callout">
                               <div className="callout-header">
-                                <Lightbulb className="callout-icon" />
                                 <span>Example</span>
                               </div>
                               <p>{concept.example}</p>
-                            </div>
-                          )}
-
-                          {concept.exam_tip && (
-                            <div className="study-callout exam-tip-callout">
-                              <div className="callout-header">
-                                <Flame className="callout-icon" />
-                                <span>Exam Tip</span>
-                              </div>
-                              <p>{concept.exam_tip}</p>
                             </div>
                           )}
                         </div>
@@ -465,7 +426,6 @@ const Notes = ({ activePaper }) => {
                       {notes?.key_findings?.map((item, idx) => (
                         <div key={idx} className="finding-card glass">
                           <div className="finding-title-row">
-                            <Award className="finding-icon" />
                             <h3>{item.finding}</h3>
                           </div>
                           

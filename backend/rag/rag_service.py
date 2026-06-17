@@ -12,7 +12,6 @@ from ai.vector_store import (
     vector_store_has_documents,
     get_all_documents,
     get_paper_persist_directory,
-    save_paper_understanding,
     load_paper_understanding
 )
 from ai.retrievers.vector_retriever import VectorRetriever
@@ -45,15 +44,13 @@ class RAGService:
         if cached_rag:
             print("Returning cached RAG")
             return cached_rag
-        # -----------------------------
+
         # INIT MODELS
-        # -----------------------------
         embedding_model = get_embedding_model()
         persist_dir = get_paper_persist_directory(pdf_url)
         paper_understanding = load_paper_understanding(pdf_url)
-        # -----------------------------
+
         # LOAD OR CREATE VECTOR STORE
-        # -----------------------------
         if vector_store_has_documents(
             embedding_model,
             persist_directory=persist_dir,
@@ -90,9 +87,7 @@ class RAGService:
                 reset_existing = False
             )
 
-        # -----------------------------
         # RETRIEVERS
-        # -----------------------------
         vector_retriever = VectorRetriever(vector_store, k=30)
         bm25_retriever = BM25Retriever(chunks)
         reranker = CrossEncoderReranker()
@@ -102,13 +97,10 @@ class RAGService:
             reranker,
             k=5,
         )
-        # -----------------------------
         # RAG ENGINE
-        # -----------------------------
         rag = ResearchPaperRAG(hybrid_retriever)
-        # -----------------------------
-        # DOCUMENT STORE (SHARED STATE)
-        # -----------------------------
+
+        # DOCUMENT STORE 
         document_store = DocumentStore(chunks)
         bundle = RAGBundle(
             rag=rag,

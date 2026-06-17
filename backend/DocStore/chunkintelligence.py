@@ -109,7 +109,6 @@ Rules:
 
 {text}
 """
-
             try:
 
                 response = (

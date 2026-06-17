@@ -7,7 +7,6 @@ from apis import flashcards
 from apis import QnA
 from apis import summary
 from apis import notes
-
 app = FastAPI()
 
 app.add_middleware(

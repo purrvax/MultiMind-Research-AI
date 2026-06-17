@@ -160,7 +160,7 @@ const SearchPaper = ({ setActivePaper }) => {
       <div>
         <div className="results-header-row">
           <h2 className="results-title">
-            { hasSearched?"Search Results":"Suggested Papers"}
+            { hasSearched?"Search Results":"Papers"}
             <span className="results-counter">
               {papers.length}
             </span>
@@ -183,6 +183,7 @@ const SearchPaper = ({ setActivePaper }) => {
                 )
               }
             </div>):(
+            <div className = "page-loading">
             <div className="empty-results-card glass">
               <Search
                 className="empty-results-icon"
@@ -193,6 +194,7 @@ const SearchPaper = ({ setActivePaper }) => {
               <p className="empty-results-desc">
                 Enter a research topic to find papers.
               </p>
+            </div>
             </div>
           )
         }

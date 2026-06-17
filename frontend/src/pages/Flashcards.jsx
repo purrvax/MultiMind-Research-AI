@@ -103,7 +103,6 @@ const Flashcards = ({ activePaper }) => {
     </select>
   </div>
   <div className='contorl-group'>
-    <label>Difficulty</label>
     <select
       value={difficulty}
       onChange={(e) => setDifficulty(e.target.value)}
@@ -114,7 +113,6 @@ const Flashcards = ({ activePaper }) => {
     </select>
     </div>
     <div className='control-group'>
-      <label>Counts</label>
     <select
       value={count}
       onChange={(e) => setCount(Number(e.target.value))}
@@ -138,14 +136,9 @@ const Flashcards = ({ activePaper }) => {
   </div>
 </div>
       <div className="flashcards-header-row">
-        <div>
           <h1 className="asset-title">
             {paper.title}
           </h1>
-          <p className="asset-meta">
-            Interactive memory recall flashcards based on research conclusions and methodology.
-          </p>
-        </div>
 
         {/* Progress Tracker Card */}
         {cards.length > 0 && (
@@ -172,6 +165,7 @@ const Flashcards = ({ activePaper }) => {
 
       {/* Grid of Flashcards */}
       {loading ? (
+        <div className='loading-page'>
         <div className="empty-results-card glass">
           <h3 className="empty-results-title">
             Generating Flashcards...
@@ -179,6 +173,7 @@ const Flashcards = ({ activePaper }) => {
           <p className="empty-results-desc">
             Creating personalized study cards from the paper.
           </p>
+        </div>
         </div>
       ) : cards.length > 0 ? (
         <div className="flashcards-grid">
@@ -192,6 +187,7 @@ const Flashcards = ({ activePaper }) => {
           ))}
         </div>
       ) : !hasGenerated ? (
+        <div className='loading-page'>
         <div className="empty-results-card glass">
           <h3 className="empty-results-title">
             Generate Flashcards
@@ -201,7 +197,9 @@ const Flashcards = ({ activePaper }) => {
             then click Generate Flashcards.
           </p>
         </div>
+        </div>
       ) : (
+        <div className = 'loading-page'>
         <div className="empty-results-card glass">
           <h3 className="empty-results-title">
             No flashcards found
@@ -210,14 +208,14 @@ const Flashcards = ({ activePaper }) => {
             Try another topic or difficulty level.
           </p>
         </div>
+        </div>
       )}
 
       {/* Info Notice */}
       {cards.length > 0 && (
         <div className="flashcards-help-notice">
-          <Sparkles className="help-notice-icon" style={{ width: '1rem', height: '1rem' }} />
           <p style={{ lineHeight: '1.5' }}>
-            <strong>How to study:</strong> Read the question on the front. Try to recall the answer, then click the card to flip and verify your understanding. Repeat until all cards are marked as studied.
+            <strong>How to study:</strong> Read the question on the front. Try to recall the answer, then click the card to flip and verify your understanding.
           </p>
         </div>
       )}

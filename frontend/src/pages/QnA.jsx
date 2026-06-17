@@ -26,7 +26,7 @@ const QnA = ({ activePaper }) => {
         {
           id: 'welcome',
           sender: 'ai',
-          text: `Hello! I'm your MultiMind Research Assistant. I've analyzed "${paper.title}" and can answer questions about its methodology, findings, contributions, experiments, limitations, and technical details.`,
+          text: `“Hi! I’ve analyzed your selected paper and can answer questions about its methods, findings, experiments, limitations, and technical details.”`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -136,6 +136,7 @@ const QnA = ({ activePaper }) => {
       </div>
 
       {/* Chat Area Panel */}
+      <div className = "chat-box">
       <div className="chat-panel-container glass">
         
         {/* Messages List Container */}
@@ -185,7 +186,6 @@ const QnA = ({ activePaper }) => {
         {/* Preset suggestions */}
         <div className="chat-suggestions-bar">
           <span className="suggestions-label">
-            <Sparkles style={{ width: '0.75rem', height: '0.75rem', color: 'var(--purple)' }} />
             <span>Suggested:</span>
           </span>
           {presetQuestions.map((q, idx) => (
@@ -208,7 +208,7 @@ const QnA = ({ activePaper }) => {
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder={`Ask something about "${paper.title}"...`}
+              placeholder={`Ask me anything about this paper`}
               className="chat-text-input"
             />
             <button
@@ -220,6 +220,7 @@ const QnA = ({ activePaper }) => {
             </button>
           </form>
         </div>
+      </div>
       </div>
     </div>
   );

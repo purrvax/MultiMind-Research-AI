@@ -14,7 +14,11 @@
   --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
+.page-loading{
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+}
 .summary-page-wrapper {
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
@@ -118,7 +122,9 @@
   flex: 1;
   min-width: 180px;
 }
-
+.control-group select {
+  color : black;
+}
 .control-label {
   font-size: 0.75rem;
   font-weight: 700;
@@ -289,14 +295,14 @@
 ========================================== */
 
 .empty-results-card {
-  padding: 3.5rem;
-  margin: 2rem 0;
+  padding: 2.5rem;
+  margin: 1rem 0;
   text-align: center;
   border-radius: 20px;
 }
 
 .empty-results-card h2 {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: #fff;
   font-family: var(--font-heading);
 }

@@ -46,11 +46,23 @@ def analyze_paper(request: PaperRequest):
         return result
 
     except Exception as e:
+
+        error = str(e).lower()
+
         print(
             f"Paper analysis failed: {str(e)}"
         )
-
+        if (
+            "rate limit" in error
+            or "quota" in error
+            or "tokens" in error
+            or "429" in error
+        ):
+            raise HTTPException(
+                status_code=429,
+                detail="AI API limit exhausted. Please try again later."
+            )
         raise HTTPException(
             status_code=500,
-            detail=str(e),
+            detail=str(e)
         )

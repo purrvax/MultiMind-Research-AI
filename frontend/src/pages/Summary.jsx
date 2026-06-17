@@ -16,7 +16,7 @@ const Summary = ({ activePaper }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasGenerated, setHasGenerated] = useState(false);
-  const [style, setStyle] = useState("technical");
+  const [explanationStyle, setExplanationStyle] = useState("beginner-friendly");
   const [length, setLength] = useState("medium");
 
   // If no paper is selected, render the empty state route protection
@@ -38,7 +38,7 @@ const Summary = ({ activePaper }) => {
           },
           body: JSON.stringify({
             paper_url: paper.pdf_url,
-            style,
+            style: explanationStyle,
             length
           })
         }
@@ -79,27 +79,18 @@ const Summary = ({ activePaper }) => {
 
       {/* Page Header */}
       <div className="asset-header-section">
-        <div className="asset-badge cyan">
-          <FileText style={{ width: '0.875rem', height: '0.875rem' }} />
-          <span>Executive Summary</span>
-        </div>
         <h1 className="asset-title">
           {paper.title}
         </h1>
-        {paper.authors && (
-          <div className="asset-meta">
-            <span>By {paper.authors}</span>
-          </div>
-        )}
       </div>
 
       {/* Summary Controls */}
       <div className="summary-controls glass">
         <div className="control-group">
           <select
-            value={length}
+            value={explanationStyle}
             disabled = {loading}
-            onChange={(e) => setLength(e.target.value)}
+            onChange={(e) => setExplanationStyle(e.target.value)}
           >
             <option value="beginner-friendly">Beginner Friendly</option>
             <option value="technical">Technical</option>
@@ -135,6 +126,7 @@ const Summary = ({ activePaper }) => {
 
       {/* Content Area */}
             {!hasGenerated ? (
+        <div className = 'page-loading'>
         <div className="empty-results-card glass">
           <h2>Generate Summary</h2>
           <p>
@@ -142,25 +134,26 @@ const Summary = ({ activePaper }) => {
             then generate a personalized summary.
           </p>
         </div>
+        </div>
       ) 
       :loading ? (
+        <div className = 'page-loading'>
         <div className="empty-results-card glass">
           <div className="spinner-container">
             <div className="loader-ring"></div>
           </div>
           <h2>Generating Summary...</h2>
-          <p className="loading-subtext">Synthesizing content with {style} focus and {length} length...</p>
+          <p className="loading-subtext">Synthesizing content with {explanationStyle} focus and {length} length...</p>
+        </div>
         </div>
       ) : error ? (
+        <div className = 'page-loading'>
         <div className="empty-results-card error-card glass">
-          <div className="error-icon-box">
-            <AlertTriangle style={{ width: '2rem', height: '2rem', color: 'var(--pink)' }} />
-          </div>
           <h2>Failed to generate summary</h2>
-          <p>{error}</p>
           <button onClick={fetchSummary} className="btn-export" style={{ marginTop: '1.5rem', display: 'inline-flex' }}>
             Try Again
           </button>
+        </div>
         </div>
       ) : (
         <div className="summary-document glass">

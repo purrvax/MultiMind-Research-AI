@@ -15,7 +15,16 @@
   --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
+.loading-page{
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.empty-results-card {
+  max-width: 700px;
+  width: 90%;
+}
 .notes-page-wrapper {
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
@@ -77,8 +86,8 @@
 
 /* Highlights Dashboard */
 .highlights-dashboard {
-  padding: 1.5rem 2rem;
-  margin-bottom: 3rem;
+  padding: 1rem 2rem;
+  margin-bottom: 2rem;
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.03), rgba(168, 85, 247, 0.03));
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -402,9 +411,9 @@
   font-family: var(--font-heading);
 }
 
-.must-remember h4 { color: var(--pink); }
-.key-takeaways h4 { color: var(--blue); }
-.important-terms h4 { color: var(--purple); }
+.must-remember h4 { color: var(--cyan); }
+.key-takeaways h4 { color: var(--cyan); }
+.important-terms h4 { color: var(--cyan); }
 
 .revision-column ul {
   margin: 0;
@@ -432,7 +441,7 @@
   border-radius: 6px;
   background: rgba(168, 85, 247, 0.06);
   border: 1px solid rgba(168, 85, 247, 0.15);
-  color: #c084fc;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -452,7 +461,7 @@
   top: 10px;
   bottom: 10px;
   width: 2px;
-  background: linear-gradient(to bottom, var(--purple), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(to bottom, var(--cyan), rgba(255, 255, 255, 0.05));
 }
 
 .timeline-node {
@@ -469,7 +478,7 @@
   height: 24px;
   border-radius: 50%;
   background: #0c0d21;
-  border: 2px solid var(--purple);
+  border: 2px solid var(--cyan);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -607,7 +616,7 @@
 }
 
 .example-callout .callout-header {
-  color: var(--yellow);
+  color: var(--blue);
 }
 
 .exam-tip-callout {
@@ -691,7 +700,7 @@
   padding: 1.25rem;
   border-radius: 0.875rem;
   border: 1px solid rgba(255, 255, 255, 0.04);
-  border-left: 3px solid var(--pink);
+  border-left: 3px solid var(--cyan);
 }
 
 .limitation-item h4 {
@@ -755,7 +764,7 @@
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--pink);
+  color: var(--cyan);
   letter-spacing: 0.05em;
 }
 
@@ -794,7 +803,7 @@
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--purple);
   border: 1px solid rgba(16, 185, 129, 0.2);
   background: rgba(16, 185, 129, 0.05);
   padding: 0.25rem 0.5rem;

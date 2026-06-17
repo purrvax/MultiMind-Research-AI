@@ -8,12 +8,11 @@ from prompts.QnA_prompt import CONTEXTUAL_QA_PROMPT
 class QnAService:
     def __init__(self, rag):
         self.rag = rag
-
         llm = get_llm()
         self.qna_chain = CONTEXTUAL_QA_PROMPT | llm
 
     def answer(self, question: str):
-        context, sources = self.rag.get_context(question)
+        context, _ = self.rag.get_context(question)
 
         response = self.qna_chain.invoke(
             {
@@ -21,9 +20,4 @@ class QnAService:
                 "question": question,
             }
         )
-
-        return {
-            "question": question,
-            "answer": response.content,
-            "sources": sources,
-        }
+        return response.content
