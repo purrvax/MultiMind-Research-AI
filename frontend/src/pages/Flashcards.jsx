@@ -57,21 +57,9 @@ const Flashcards = ({ activePaper }) => {
     setLoading(false);
   }
 };
-  // Keep track of how many cards have been flipped/studied
-  const [studiedCount, setStudiedCount] = useState(0);
-  const [studiedSet, setStudiedSet] = useState(new Set());
-
-  const handleCardClick = (idx) => {
-    if (!studiedSet.has(idx)) {
-      const updated = new Set(studiedSet);
-      updated.add(idx);
-      setStudiedSet(updated);
-      setStudiedCount(updated.size);
-    }
-  };
 
   return (
-    <div className="container-wide" style={{ padding: '3rem 1.5rem', textAlign: 'left' }}>
+    <div className="container-wide" style={{ padding: '2rem 1.5rem', textAlign: 'left' }}>
       {/* Back Link */}
       <div className="breadcrumb-row">
         <Link 
@@ -135,34 +123,6 @@ const Flashcards = ({ activePaper }) => {
 
   </div>
 </div>
-      <div className="flashcards-header-row">
-          <h1 className="asset-title">
-            {paper.title}
-          </h1>
-
-        {/* Progress Tracker Card */}
-        {cards.length > 0 && (
-          <div className="flashcard-progress-card">
-            <div className="progress-icon-box">
-              <Award style={{ width: '1.25rem', height: '1.25rem' }} />
-            </div>
-            <div>
-              <div className="progress-title">Studied Progress</div>
-              <div className="progress-counter">
-                {studiedCount} of {cards.length} Cards
-              </div>
-              {/* Minimal Progress Bar */}
-              <div className="progress-bar-track">
-                <div 
-                  className="progress-bar-fill"
-                  style={{ width: `${cards.length ? (studiedCount / cards.length) * 100: 0}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
       {/* Grid of Flashcards */}
       {loading ? (
         <div className='loading-page'>

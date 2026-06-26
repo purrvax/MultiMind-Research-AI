@@ -1,104 +1,117 @@
-import React, { useEffect, useState , useRef } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Loader2, ExternalLink } from "lucide-react";
 import "./Workspace_Building.css";
 
+const messages = [
+  "Extracting content...",
+  "Analyzing research contributions...",
+  "Generating AI summary...",
+  "Building knowledge workspace...",
+  "Preparing your experience..."
+];
+
 const Workspace_Building = ({ setActivePaper }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const hasRun = useRef(false);
   const paper = location.state?.paper;
-
-  const messages = [
-    "Extracting content...",
-    "Analyzing research contributions...",
-    "Generating AI summary...",
-    "Building knowledge workspace...",
-    "Preparing your experience..."
-  ];
-
+  const hasRun = useRef(false);
+  const abortControllerRef = useRef(null);
+  const taskIdRef = useRef(null);
+  const completedRef = useRef(false);
+  const cancellingRef = useRef(false);
+  const mountedRef = useRef(false);
   const [messageIndex, setMessageIndex] = useState(0);
 
-  // Rotate loading messages
+  const cancelActiveTask = useCallback(async (taskId = taskIdRef.current) => {
+    if (!taskId) return;
+
+    try {
+      console.log("Cancelling task:", taskId);
+      await fetch(`http://127.0.0.1:8000/api/cancel-analysis/${taskId}`, {
+        method: "POST"
+      });
+    } catch (error) {
+      console.error("Error cancelling workspace generation:", error);
+    }
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % messages.length);
     }, 2500);
 
-    return () => {clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, []);
 
-  // Build workspace
   useEffect(() => {
-    let mounted = true;
-
     if (!paper) {
       navigate("/search-paper");
       return;
     }
+
+    mountedRef.current = true;
+
     if (hasRun.current) return;
     hasRun.current = true;
+
+    const controller = new AbortController();
+    const taskId = crypto.randomUUID();
+    abortControllerRef.current = controller;
+    taskIdRef.current = taskId;
+    console.log("Created workspace task:", taskId);
+
     const buildWorkspace = async () => {
       try {
-        console.log("Building workspace for:", paper.title);
-        console.log("1.Starting Fetch");
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/analyze-paper",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              paper_url: paper.pdf_url
-            })
-          }
-        );
-        console.log("2.Fetch Completed");
-        console.log("Status:", response.status);
+        const response = await fetch("http://127.0.0.1:8000/api/analyze-paper", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            paper_url: paper.pdf_url,
+            task_id: taskId
+          }),
+          signal: controller.signal
+        });
+
         if (!response.ok) {
           throw new Error("Paper analysis failed");
         }
-        const data = await response.json();
-        console.log("JSON PARSED")
-        console.log(data.analysis);
-        let analyzedPaper;
-        try {
-            console.log("Analysis type:", typeof data.analysis);
-            console.log("Analysis exists:", !!data.analysis);
-            console.log("Analysis keys:",
-              Object.keys(data.analysis || {})
-            );
-            analyzedPaper = {
-              ...paper,
-              paper_understanding: data.analysis
-            };
 
-            console.log("3. OBJECT CREATED");
-          } catch(err) {
-            console.error("ERROR AFTER JSON:", err);
-          }
-        // Update global state + localStorage through App.jsx
-        try {
-          setActivePaper(analyzedPaper);
-          console.log("STATE UPDATED");
-        } catch (e) {
-          console.error("SET STATE ERROR:", e);
+        const data = await response.json();
+
+        if (data.status === "cancelled") {
+          console.log("Workspace generation cancelled:", taskId);
+          completedRef.current = true;
+          if (!mountedRef.current) return;
+          navigate("/search-paper");
+          return;
         }
+
+        const analyzedPaper = {
+          ...paper,
+          paper_understanding: data.analysis
+        };
+
+        completedRef.current = true;
+        if (!mountedRef.current) return;
+        setActivePaper(analyzedPaper);
+
         navigate("/workspace", {
           state: {
             paper: analyzedPaper
           }
         });
-        console.log("5. NAVIGATION CALLED");
       } catch (error) {
-        if (!mounted) return;
+        if (error.name === "AbortError") {
+          console.log("Request cancelled");
+          return;
+        }
 
+        if (!mountedRef.current) return;
         console.error("Error analyzing paper:", error);
-
         alert("Failed to build workspace. Please try again.");
-
         navigate("/search-paper");
       }
     };
@@ -106,31 +119,31 @@ const Workspace_Building = ({ setActivePaper }) => {
     buildWorkspace();
 
     return () => {
-      mounted = false;
+      mountedRef.current = false;
     };
-  }, [paper]);
+  }, [paper, navigate, setActivePaper, cancelActiveTask]);
+
+  const stopBuilding = async () => {
+    if (cancellingRef.current) return;
+    cancellingRef.current = true;
+    await cancelActiveTask();
+    abortControllerRef.current?.abort();
+    navigate("/search-paper");
+  };
 
   return (
     <div className="workspace-building">
       <div className="workspace-building-card">
         <Loader2 className="workspace-spinner" />
 
-        <h1 className="workspace-title">
-          Building Workspace...
-        </h1>
+        <h1 className="workspace-title">Building Workspace...</h1>
 
-        <p className="workspace-status">
-          {messages[messageIndex]}
-        </p>
+        <p className="workspace-status">{messages[messageIndex]}</p>
 
         <div className="workspace-paper-section">
-          <h3>
-            Explore the paper while we prepare your workspace
-          </h3>
+          <h3>Explore the paper while we prepare your workspace</h3>
 
-          <p className="paper-name">
-            {paper?.title}
-          </p>
+          <p className="paper-name">{paper?.title}</p>
 
           {paper?.pdf_url && (
             <a
@@ -144,6 +157,11 @@ const Workspace_Building = ({ setActivePaper }) => {
             </a>
           )}
         </div>
+      </div>
+      <div className="exit-button">
+      <button className="stop-button" onClick={stopBuilding}>
+          Exit WorkSpace
+      </button>
       </div>
     </div>
   );

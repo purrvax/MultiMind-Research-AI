@@ -51,9 +51,6 @@ const Summary = ({ activePaper }) => {
           data.detail || "Failed to generate summary"
         );
       }
-      console.log(data);
-      console.log(data.summary);
-      console.log(typeof data.summary.summary);
       setSummary(data.summary.summary);
     } catch (err) {
       setError(err.message);
@@ -168,18 +165,6 @@ const Summary = ({ activePaper }) => {
         </div>
       )}
 
-      {/* Action panel */}
-      <div className="summary-footer-actions">
-        {hasGenerated && !loading && !error && (
-          <button
-            onClick={() => window.print()}
-            className="btn-export"
-          >
-            <Download style={{ width: '1rem', height: '1rem' }} />
-            <span>Export Summary (PDF)</span>
-          </button>
-        )} </div>
-        
         <div className="summary-footer-actions">
           {hasGenerated && !loading && !error && (
             <button

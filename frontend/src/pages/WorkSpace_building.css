@@ -1,9 +1,10 @@
 .workspace-building {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
+  margin: 0;
 }
 
 .workspace-building-card {
@@ -83,12 +84,23 @@
     transform: rotate(360deg);
   }
 }
-.cancel-build-btn {
-  margin-top: 1.5rem;
-  padding: 0.8rem 1.4rem;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
+.exit-button{
+  display: flex;
+  width : 100%;
+  justify-content: center;
+}
+.stop-button{
+  margin-top:1.5rem;
+  padding:0.7rem 1.5rem;
+  border-radius:0.75rem;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(37, 59, 197, 0.15);
+  color:#6366f1;
+  font-weight: 800;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.stop-button:hover{
+  transform:translateY(-2px);
 }

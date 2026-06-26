@@ -1,4 +1,6 @@
 import re
+from cancel_manager import CancellationError, is_cancelled
+
 class ChunkIntelligenceEngine:
 
     def __init__(
@@ -13,7 +15,8 @@ class ChunkIntelligenceEngine:
 
     def process_chunks(
         self,
-        chunks
+        chunks,
+        task_id=None
     ):
         structured_chunks = []
         total_batches = (
@@ -28,6 +31,9 @@ class ChunkIntelligenceEngine:
             ),
             start=1
         ):
+            if task_id and is_cancelled(task_id):
+                print(f"cancellation detected: {task_id}")
+                raise CancellationError()
 
             batch = chunks[
                 i:i + self.batch_size
@@ -116,8 +122,13 @@ Rules:
                     .invoke(prompt)
                     .content
                 )
+                if task_id and is_cancelled(task_id):
+                    print(f"cancellation detected: {task_id}")
+                    raise CancellationError()
 
             except Exception as e:
+                if isinstance(e, CancellationError):
+                    raise
 
                 print(
                     f"Batch {batch_num} failed: {e}"

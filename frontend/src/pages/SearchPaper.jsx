@@ -131,9 +131,9 @@ const SearchPaper = ({ setActivePaper }) => {
             </div>
             <button
               type="submit"
-              disabled={isSearching}
+              disabled={isSearching || !query.trim()}
               className="search-btn"
-            >{isSearching?"Searching...":"Search"}
+            > Search
             </button>
           </div>
           <div className="tags-row">
@@ -161,43 +161,61 @@ const SearchPaper = ({ setActivePaper }) => {
         <div className="results-header-row">
           <h2 className="results-title">
             { hasSearched?"Search Results":"Papers"}
-            <span className="results-counter">
-              {papers.length}
-            </span>
           </h2>
         </div>
-        { papers.length > 0?
-          (
-            <div className="cards-grid">
-              {
-                papers.map(
-                  (paper)=>(
-                    <PaperCard
-                      key={
-                        paper.id || paper.title
-                      }
-                      paper={paper}
-                      onSelect={setActivePaper}
-                    />
-                  )
-                )
-              }
-            </div>):(
-            <div className = "page-loading">
+      {
+        isSearching ? (
+          <div className="page-loading">
             <div className="empty-results-card glass">
-              <Search
-                className="empty-results-icon"
-              />
               <h3 className="empty-results-title">
-                {hasSearched?"No papers found":"Search for papers"}
+                Searching papers...
+              </h3>
+              <p className="empty-results-desc">
+                Finding relevant research papers.
+              </p>
+            </div>
+          </div>
+        ) : papers.length > 0 ? (
+          <div className="cards-grid">
+            {
+              papers.map(
+                (paper)=>(
+                  <PaperCard
+                    key={paper.id || paper.title}
+                    paper={paper}
+                    onSelect={setActivePaper}
+                  />
+                )
+              )
+            }
+          </div>
+        ) : hasSearched ? (
+
+          <div className="page-loading">
+            <div className="empty-results-card glass">
+              <h3 className="empty-results-title">
+                No papers found
+              </h3>
+
+              <p className="empty-results-desc">
+                Try another research topic.
+              </p>
+
+            </div>
+          </div>
+        ) : (
+          <div className="page-loading">
+            <div className="empty-results-card glass">
+              <h3 className="empty-results-title">
+                Search for papers
               </h3>
               <p className="empty-results-desc">
                 Enter a research topic to find papers.
               </p>
             </div>
-            </div>
-          )
-        }
+          </div>
+        )
+      }
       </div>
     </div>
   );

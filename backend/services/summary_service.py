@@ -107,7 +107,7 @@ Mention datasets, benchmarks,
 or evaluation setup.
 
 If unavailable:
-"Not clearly mentioned."
+Skip this section completely.
 
 ## Main Results
 Summarize important findings.
@@ -116,13 +116,13 @@ Summarize important findings.
 Mention limitations if available.
 
 If unavailable:
-"Not clearly mentioned."
+Skip this section completely.
 
 ## Future Work
 Mention future directions.
 
 If unavailable:
-"Not clearly mentioned."
+Skip this section completely.
 
 ## Conclusion
 Summarize the final conclusions.
@@ -142,6 +142,9 @@ Requirements:
 - Do not add external knowledge.
 - Avoid repetition.
 - Maintain academic structure.
+- Do not generate empty sections.
+- Do not write phrases like "Not clearly mentioned", "N/A", or "Unavailable".
+- Only include sections that contain meaningful information.
 - Respect the requested length.
 """
 

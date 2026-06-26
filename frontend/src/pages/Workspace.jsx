@@ -18,6 +18,16 @@ const Workspace = ({ activePaper, setActivePaper }) => {
     }
   }, [paper, activePaper, setActivePaper]);
 
+  useEffect(() => {
+    document.documentElement.classList.add('workspace-scrollbar-hidden');
+    document.body.classList.add('workspace-scrollbar-hidden');
+
+    return () => {
+      document.documentElement.classList.remove('workspace-scrollbar-hidden');
+      document.body.classList.remove('workspace-scrollbar-hidden');
+    };
+  }, []);
+
   // If no paper is selected, show the beautiful Route Protection screen
   if (!paper) {
     return <NoPaperSelected />;
@@ -55,7 +65,7 @@ const Workspace = ({ activePaper, setActivePaper }) => {
   ];
 
   return (
-    <div className="container-wide" style={{ padding: '3rem 1.5rem', textAlign: 'left' }}>
+    <div className="container-wide" style={{ padding: '2rem 1.5rem', textAlign: 'left' }}>
       {/* Navigation Breadcrumb */}
       <div className="breadcrumb-row">
         <Link 

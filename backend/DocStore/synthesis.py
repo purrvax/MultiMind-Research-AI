@@ -1,26 +1,38 @@
 import json
+from cancel_manager import CancellationError, is_cancelled
 
 class PaperSynthesisService:
     def __init__(self,llm,batch_size= 5):
         self.llm = llm
         self.batch_size = batch_size
 
-    def synthesize(self,structured_chunks):
+    def synthesize(self,structured_chunks,task_id=None):
 
         batch_summaries = []
+
         for i in range(0,len(structured_chunks),self.batch_size):
+
+            if task_id and is_cancelled(task_id):
+                print(f"cancellation detected: {task_id}")
+                raise CancellationError()
+            
             batch = structured_chunks[i:i + self.batch_size]
-            result = self._synthesize_batch(batch)
+            result = self._synthesize_batch(batch, task_id)
             if result:
                 batch_summaries.append(result)
         if not batch_summaries:
             return {}
+        if task_id and is_cancelled(task_id):
+            print(f"cancellation detected: {task_id}")
+            raise CancellationError()
         return self._global_synthesis(
-            batch_summaries
+            batch_summaries,
+            task_id
         )
     def _synthesize_batch(
         self,
-        batch
+        batch,
+        task_id=None
     ):
 
         text = "\n\n".join(
@@ -85,6 +97,9 @@ Rules:
                 .invoke(prompt)
                 .content
             )
+            if task_id and is_cancelled(task_id):
+                print(f"cancellation detected: {task_id}")
+                raise CancellationError()
 
             result = self._safe_json(
                 response
@@ -111,6 +126,8 @@ Rules:
             return result
 
         except Exception as e:
+            if isinstance(e, CancellationError):
+                raise
 
             print(
                 f"Batch synthesis error: {e}"
@@ -120,7 +137,8 @@ Rules:
 
     def _global_synthesis(
         self,
-        batch_summaries
+        batch_summaries,
+        task_id=None
     ):
 
         text = "\n\n".join(
@@ -237,6 +255,9 @@ Rules:
                 .invoke(prompt)
                 .content
             )
+            if task_id and is_cancelled(task_id):
+                print(f"cancellation detected: {task_id}")
+                raise CancellationError()
 
             result = self._safe_json(
                 response
@@ -262,6 +283,8 @@ Rules:
             return result
 
         except Exception as e:
+            if isinstance(e, CancellationError):
+                raise
 
             print(
                 f"Global synthesis error: {e}"

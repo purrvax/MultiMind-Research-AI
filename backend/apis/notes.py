@@ -33,6 +33,9 @@ def generate_notes(request : NotesRequest):
         }
     
     except Exception as e:
+        print("ERROR TYPE:", type(e).__name__)
+        print("ERROR MESSAGE:", str(e))
+
         raise HTTPException(
             status_code=500,
             detail=str(e)

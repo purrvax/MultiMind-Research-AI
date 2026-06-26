@@ -36,7 +36,10 @@ def generate_flashcards(request: FlashCardRequest):
             "flashcards": flashcards
         }
     except Exception as e:
+        print("ERROR TYPE:", type(e).__name__)
+        print("ERROR MESSAGE:", str(e))
+
         raise HTTPException(
             status_code=500,
-            detail=f"Flashcard generation failed: {str(e)}"
+            detail=str(e)
         )
