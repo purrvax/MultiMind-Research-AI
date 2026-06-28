@@ -48,8 +48,6 @@ const Flashcards = ({ activePaper }) => {
     }
 
     setCards(data.flashcards || []);
-    setStudiedCount(0);
-    setStudiedSet(new Set());
   } catch (error) {
     console.error(error);
     alert("Failed to generate flashcards");
@@ -168,15 +166,6 @@ const Flashcards = ({ activePaper }) => {
             Try another topic or difficulty level.
           </p>
         </div>
-        </div>
-      )}
-
-      {/* Info Notice */}
-      {cards.length > 0 && (
-        <div className="flashcards-help-notice">
-          <p style={{ lineHeight: '1.5' }}>
-            <strong>How to study:</strong> Read the question on the front. Try to recall the answer, then click the card to flip and verify your understanding.
-          </p>
         </div>
       )}
 
