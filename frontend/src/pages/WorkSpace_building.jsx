@@ -66,11 +66,17 @@ const Workspace_Building = ({ setActivePaper }) => {
         const response = await fetch("http://127.0.0.1:8000/api/analyze-paper", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('multimind_token')}`
           },
           body: JSON.stringify({
-            paper_url: paper.pdf_url,
-            task_id: taskId
+            paper_url: paper.pdf_url || paper.paper_url,
+            task_id: taskId,
+            title: paper.title,
+            authors: paper.authors,
+            abstract: paper.abstract,
+            published_date: paper.year?.toString() || paper.published_date || paper.published_date_raw,
+            source: paper.source
           }),
           signal: controller.signal
         });
@@ -91,6 +97,7 @@ const Workspace_Building = ({ setActivePaper }) => {
 
         const analyzedPaper = {
           ...paper,
+          id: data.paper_id, // Store the MySQL database paper ID
           paper_understanding: data.analysis
         };
 
@@ -145,9 +152,9 @@ const Workspace_Building = ({ setActivePaper }) => {
 
           <p className="paper-name">{paper?.title}</p>
 
-          {paper?.pdf_url && (
+          {(paper?.pdf_url || paper?.paper_url) && (
             <a
-              href={paper.pdf_url}
+              href={paper.pdf_url || paper.paper_url}
               target="_blank"
               rel="noopener noreferrer"
               className="paper-pdf-btn"
@@ -159,9 +166,9 @@ const Workspace_Building = ({ setActivePaper }) => {
         </div>
       </div>
       <div className="exit-button">
-      <button className="stop-button" onClick={stopBuilding}>
+        <button className="stop-button" onClick={stopBuilding}>
           Exit WorkSpace
-      </button>
+        </button>
       </div>
     </div>
   );

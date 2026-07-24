@@ -1,9 +1,9 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Brain, Search } from 'lucide-react';
+import { Brain, Search, LogOut, FileText } from 'lucide-react';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ activePaper, currentUser, onLogout }) => {
   return (
     <nav className="navbar glass">
       <div className="navbar-container">
@@ -34,9 +34,32 @@ const Navbar = () => {
             <Search style={{ width: '1rem', height: '1rem' }} />
             <span>Search Papers</span>
           </NavLink>
+
+          {activePaper && (
+            <NavLink
+              to="/workspace"
+              className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
+            >
+              <FileText style={{ width: '1rem', height: '1rem' }} />
+              <span>Workspace</span>
+            </NavLink>
+          )}
+
+          {currentUser && (
+            <div className="user-profile-section">
+              <span className="user-greeting">
+                Hello, <span className="user-name">{currentUser.name || currentUser.email}</span>
+              </span>
+              <button onClick={onLogout} className="logout-btn" title="Sign Out">
+                <LogOut style={{ width: '0.875rem', height: '0.875rem' }} />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
   );
 };
+
 export default Navbar;

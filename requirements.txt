@@ -19,6 +19,9 @@ pypdf
 pymupdf
 pillow
 
+# Retrivers
+rank_bm25
+
 # Text Splitters
 langchain-text-splitters
 
@@ -33,3 +36,10 @@ streamlit
 fastapi
 uvicorn
 dotenv
+
+#PAPERSPACE
+arxiv
+
+# Database & Auth
+pymysql
+PyJWT

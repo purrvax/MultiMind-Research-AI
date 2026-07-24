@@ -7,6 +7,7 @@ from apis import flashcards
 from apis import QnA
 from apis import summary
 from apis import notes
+from apis import auth
 app = FastAPI()
 
 app.add_middleware(
@@ -16,6 +17,10 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+app.include_router(
+    auth.router,
+    prefix="/api"
+)
 app.include_router(
     papers.router,
     prefix="/api"

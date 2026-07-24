@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import NoPaperSelected from '../components/NoPaperSelected';
-import {ArrowLeft, Send, Cpu, User, Sparkles } from 'lucide-react';
+import { ArrowLeft, Send, Cpu, User } from 'lucide-react';
 import './QnA.css';
 
 const QnA = ({ activePaper }) => {
@@ -19,9 +19,41 @@ const QnA = ({ activePaper }) => {
   
   const chatEndRef = useRef(null);
 
-  // Initialize chat with AI greeting specific to the paper
+  // Initialize chat with history or welcome message
   useEffect(() => {
-    if (paper) {
+    const fetchChatHistory = async () => {
+      if (!paper || !paper.id) return;
+      try {
+        const response = await fetch(`http://localhost:8000/api/papers/${paper.id}/chat`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem('multimind_token')}`
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.messages && data.messages.length > 0) {
+            setMessages(data.messages.map(msg => {
+              let timeStr = "";
+              try {
+                timeStr = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              } catch (e) {
+                timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              }
+              return {
+                id: msg.id,
+                sender: msg.role === 'user' ? 'user' : 'ai',
+                text: msg.content,
+                timestamp: timeStr
+              };
+            }));
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load chat history:", error);
+      }
+
+      // Fallback greeting if no messages found
       setMessages([
         {
           id: 'welcome',
@@ -30,7 +62,9 @@ const QnA = ({ activePaper }) => {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
-    }
+    };
+
+    fetchChatHistory();
   }, [paper]);
 
   // Scroll to bottom of chat
@@ -39,74 +73,74 @@ const QnA = ({ activePaper }) => {
   }, [messages, isTyping]);
 
   const handleSend = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!inputValue.trim() || isTyping) return;
+    if (!inputValue.trim() || isTyping) return;
 
-  const question = inputValue.trim();
+    const question = inputValue.trim();
 
-  const userMessage = {
-    id: `user-${Date.now()}`,
-    sender: "user",
-    text: question,
-    timestamp: new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit"
-    })
-  };
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      sender: "user",
+      text: question,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    };
 
-  setMessages((prev) => [...prev, userMessage]);
-  setInputValue("");
-  setIsTyping(true);
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    setIsTyping(true);
 
-  try {
-    const response = await fetch(
-      "http://localhost:8000/api/qna",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          paper_url: paper.pdf_url,
-          query: question
-        })
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/qna",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('multimind_token')}`
+          },
+          body: JSON.stringify({
+            paper_url: paper.pdf_url || paper.paper_url,
+            query: question
+          })
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.detail || "Failed to get answer");
       }
-    );
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(
-        data.detail || "Failed to get answer");
+      const aiMessage = {
+        id: `ai-${Date.now()}`,
+        sender: "ai",
+        text: data.answer,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      };
+
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("QnA Error:", error);
+
+      const errorMessage = {
+        id: `error-${Date.now()}`,
+        sender: "ai",
+        text: "Sorry, I couldn't answer your question right now.",
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      };
+
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
     }
-    const aiMessage = {
-      id: `ai-${Date.now()}`,
-      sender: "ai",
-      text: data.answer,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      })
-    };
-
-    setMessages((prev) => [...prev, aiMessage]);
-  } catch (error) {
-    console.error("QnA Error:", error);
-
-    const errorMessage = {
-      id: `error-${Date.now()}`,
-      sender: "ai",
-      text: "Sorry, I couldn't answer your question right now.",
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      })
-    };
-
-    setMessages((prev) => [...prev, errorMessage]);
-  } finally {
-    setIsTyping(false);
-  }
-};
+  };
 
   const presetQuestions = [
     "What is the core methodology?",
@@ -136,91 +170,91 @@ const QnA = ({ activePaper }) => {
       </div>
 
       {/* Chat Area Panel */}
-      <div className = "chat-box">
-      <div className="chat-panel-container glass">
-        
-        {/* Messages List Container */}
-        <div className="chat-messages-area">
-          {messages.map((msg) => {
-            const isAI = msg.sender === 'ai';
-            return (
-              <div 
-                key={msg.id}
-                className={`chat-row ${isAI ? 'ai' : 'user'}`}
-              >
-                {/* Avatar Icon */}
+      <div className="chat-box">
+        <div className="chat-panel-container glass">
+          
+          {/* Messages List Container */}
+          <div className="chat-messages-area">
+            {messages.map((msg) => {
+              const isAI = msg.sender === 'ai';
+              return (
+                <div 
+                  key={msg.id}
+                  className={`chat-row ${isAI ? 'ai' : 'user'}`}
+                >
+                  {/* Avatar Icon */}
+                  <div className="chat-avatar-box">
+                    {isAI ? <Cpu style={{ width: '1rem', height: '1rem' }} /> : <User style={{ width: '1rem', height: '1rem' }} />}
+                  </div>
+
+                  {/* Message Bubble */}
+                  <div className="chat-bubble">
+                    <p className="chat-bubble-text">{msg.text}</p>
+                    <span className="chat-bubble-timestamp">
+                      {msg.timestamp}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div className="chat-row ai">
                 <div className="chat-avatar-box">
-                  {isAI ? <Cpu style={{ width: '1rem', height: '1rem' }} /> : <User style={{ width: '1rem', height: '1rem' }} />}
+                  <Cpu style={{ width: '1rem', height: '1rem' }} className="animate-pulse-slow" />
                 </div>
-
-                {/* Message Bubble */}
                 <div className="chat-bubble">
-                  <p className="chat-bubble-text">{msg.text}</p>
-                  <span className="chat-bubble-timestamp">
-                    {msg.timestamp}
-                  </span>
+                  <div className="typing-indicators-row">
+                    <div className="typing-dot" />
+                    <div className="typing-dot" />
+                    <div className="typing-dot" />
+                  </div>
                 </div>
               </div>
-            );
-          })}
+            )}
 
-          {/* Typing Indicator */}
-          {isTyping && (
-            <div className="chat-row ai">
-              <div className="chat-avatar-box">
-                <Cpu style={{ width: '1rem', height: '1rem' }} className="animate-pulse-slow" />
-              </div>
-              <div className="chat-bubble">
-                <div className="typing-indicators-row">
-                  <div className="typing-dot" />
-                  <div className="typing-dot" />
-                  <div className="typing-dot" />
-                </div>
-              </div>
-            </div>
-          )}
+            <div ref={chatEndRef} />
+          </div>
 
-          <div ref={chatEndRef} />
+          {/* Preset suggestions */}
+          <div className="chat-suggestions-bar">
+            <span className="suggestions-label">
+              <span>Suggested:</span>
+            </span>
+            {presetQuestions.map((q, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setInputValue(q);
+                }}
+                className="chat-suggestion-btn"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+
+          {/* Input Form Box */}
+          <div className="chat-input-bar">
+            <form onSubmit={handleSend} className="chat-form">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Ask me anything about this paper"
+                className="chat-text-input"
+              />
+              <button
+                type="submit"
+                disabled={!inputValue.trim() || isTyping}
+                className="chat-send-btn"
+              >
+                <Send style={{ width: '1.25rem', height: '1.25rem' }} />
+              </button>
+            </form>
+          </div>
         </div>
-
-        {/* Preset suggestions */}
-        <div className="chat-suggestions-bar">
-          <span className="suggestions-label">
-            <span>Suggested:</span>
-          </span>
-          {presetQuestions.map((q, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setInputValue(q);
-              }}
-              className="chat-suggestion-btn"
-            >
-              {q}
-            </button>
-          ))}
-        </div>
-
-        {/* Input Form Box */}
-        <div className="chat-input-bar">
-          <form onSubmit={handleSend} className="chat-form">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder={`Ask me anything about this paper`}
-              className="chat-text-input"
-            />
-            <button
-              type="submit"
-              disabled={!inputValue.trim() || isTyping}
-              className="chat-send-btn"
-            >
-              <Send style={{ width: '1.25rem', height: '1.25rem' }} />
-            </button>
-          </form>
-        </div>
-      </div>
       </div>
     </div>
   );

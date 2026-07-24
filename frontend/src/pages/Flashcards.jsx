@@ -18,26 +18,26 @@ const Flashcards = ({ activePaper }) => {
   if (!paper) {
     return <NoPaperSelected />;
   }
-
   const handleGenerate = async () => {
-  try {
-    setLoading(true);
-    setHasGenerated(true);
-    const response = await fetch(
-      "http://localhost:8000/api/flashcards",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          paper_url: paper.pdf_url,
-          topic,
-          difficulty,
-          count
-        })
-      }
-    );
+    try {
+      setLoading(true);
+      setHasGenerated(true);
+      const response = await fetch(
+        "http://localhost:8000/api/flashcards",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('multimind_token')}`
+          },
+          body: JSON.stringify({
+            paper_url: paper.pdf_url || paper.paper_url,
+            topic,
+            difficulty,
+            count
+          })
+        }
+      );
 
     const data = await response.json();
 

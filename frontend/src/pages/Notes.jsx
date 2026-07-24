@@ -42,10 +42,11 @@ const Notes = ({ activePaper }) => {
           {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem('multimind_token')}`
             },
             body: JSON.stringify({
-              paper_url: paper.pdf_url
+              paper_url: paper.pdf_url || paper.paper_url
             })
           }
         );
