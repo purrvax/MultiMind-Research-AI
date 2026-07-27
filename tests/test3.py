@@ -31,23 +31,27 @@ understanding_service = (
 )
 paper_understanding = (
     understanding_service.generate(
-        bundle.document_store
+        bundle.document_store,
+        task_id="test-task"
     )
 )
 pprint(paper_understanding)
 
 qna = QnAService(bundle.rag)
 qna_result = qna.answer(
-    "Explain Transformer Architecture?"
+    question="Explain Transformer Architecture?",
+    chat_history="User: Hello\nAssistant: Hi",
+    paper_title="Attention Is All You Need",
+    paper_metadata="Authors: Ashish Vaswani, et al. | Published Date: 2017"
 )
 print("\nQnA Answer:")
-print(qna_result["answer"])
+print(qna_result)
 
 summary_service = SummaryService(llm)
 
 summary = summary_service.generate(
     paper_understanding=paper_understanding,
-    style="Beginner-Friendly",
+    style="beginner-friendly",
     length="medium"
 )
 
@@ -55,9 +59,9 @@ print("\n📝 SUMMARY")
 print("=" * 80)
 print(summary)
 
-notes_service = NotesService()
+notes_service = NotesService(llm)
 notes_result = (
-    notes_service.generate_notes(
+    notes_service.generate(
         paper_understanding
     )
 )

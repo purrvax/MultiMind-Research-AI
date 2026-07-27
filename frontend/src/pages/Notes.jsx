@@ -80,7 +80,7 @@ const Notes = ({ activePaper }) => {
   if (loading) {
     return (
       <div className='loading-page'>
-      <div className="empty-results-card glass">
+      <div className="empty-results-card">
         <div className="spinner-container">
           <div className="loader-ring"></div>
         </div>

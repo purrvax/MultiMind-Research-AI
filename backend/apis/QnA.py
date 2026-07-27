@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
@@ -26,6 +27,17 @@ def generate_answer(
         if not paper:
             raise HTTPException(status_code=404, detail="Paper not found in database")
 
+        # Load previous chat history (before adding the current user message)
+        previous_messages = db.query(ChatMessage).filter(
+            ChatMessage.user_id == current_user.id,
+            ChatMessage.paper_id == paper.id
+        ).order_by(ChatMessage.id.asc()).all()
+
+        chat_history_str = ""
+        for msg in previous_messages:
+            role_label = "User" if msg.role == "user" else "Assistant"
+            chat_history_str += f"{role_label}: {msg.content}\n"
+
         # Save user message
         user_msg = ChatMessage(
             user_id=current_user.id,
@@ -45,10 +57,32 @@ def generate_answer(
             bundle = RAGService.build(request.paper_url)
             if bundle is None:
                 raise Exception("Paper not analyzed yet")
+
+        # Build paper metadata
+        metadata_parts = []
+        if paper.authors:
+            try:
+                authors_list = json.loads(paper.authors)
+                if isinstance(authors_list, list):
+                    metadata_parts.append(f"Authors: {', '.join(authors_list)}")
+                else:
+                    metadata_parts.append(f"Authors: {paper.authors}")
+            except Exception:
+                metadata_parts.append(f"Authors: {paper.authors}")
+        if paper.published_date:
+            metadata_parts.append(f"Published Date: {paper.published_date}")
+        if paper.source:
+            metadata_parts.append(f"Source: {paper.source}")
+        paper_metadata_str = " | ".join(metadata_parts)
         
         rag = bundle.rag
         qna_service = QnAService(rag)
-        result = qna_service.answer(request.query)
+        result = qna_service.answer(
+            question=request.query,
+            chat_history=chat_history_str,
+            paper_title=paper.title,
+            paper_metadata=paper_metadata_str
+        )
 
         # Save assistant message
         assistant_msg = ChatMessage(

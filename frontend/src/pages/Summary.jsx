@@ -55,12 +55,7 @@ const Summary = ({ activePaper }) => {
     }
   };
 
-  // Load summary automatically on mount
-  useEffect(() => {
-    if (paper) {
-      fetchSummary();
-    }
-  }, []);
+
 
   // If no paper is selected, render the empty state route protection
   if (!paper) {

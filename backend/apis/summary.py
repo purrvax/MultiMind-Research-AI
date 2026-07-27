@@ -30,23 +30,42 @@ def generate_summary(
             raise HTTPException(status_code=404, detail="Paper not found in database")
 
         # Check for cached asset in MySQL
-        existing_assets = db.query(GeneratedAsset).filter(
+        params = {"style": request.style, "length": request.length}
+        params_json_str = json.dumps(params)
+        
+        existing_asset = db.query(GeneratedAsset).filter(
             GeneratedAsset.user_id == current_user.id,
             GeneratedAsset.paper_id == paper.id,
-            GeneratedAsset.asset_type == "summary"
-        ).all()
+            GeneratedAsset.asset_type == "summary",
+            GeneratedAsset.params_json == params_json_str
+        ).first()
 
-        for asset in existing_assets:
-            try:
-                params = json.loads(asset.params_json)
-                if params.get("style") == request.style and params.get("length") == request.length:
-                    print("Returning cached summary from database")
-                    return {
-                        "status": "success",
-                        "summary": json.loads(asset.content_json)
-                    }
-            except Exception:
-                continue
+        # Fallback check for cached asset in MySQL
+        if not existing_asset:
+            existing_assets = db.query(GeneratedAsset).filter(
+                GeneratedAsset.user_id == current_user.id,
+                GeneratedAsset.paper_id == paper.id,
+                GeneratedAsset.asset_type == "summary"
+            ).all()
+
+            for asset in existing_assets:
+                try:
+                    p = json.loads(asset.params_json)
+                    if p.get("style") == request.style and p.get("length") == request.length:
+                        existing_asset = asset
+                        break
+                except Exception:
+                    continue
+
+        if existing_asset:
+            print("cache hit")
+            return {
+                "status": "success",
+                "summary": json.loads(existing_asset.content_json)
+            }
+
+        print("cache miss")
+        print("generation started")
 
         # If not cached in MySQL, load RAG bundle and generate
         bundle = RAGCache.get(request.paper_url)
@@ -68,6 +87,7 @@ def generate_summary(
             style=request.style,
             length=request.length
         )
+        print("generation completed")
 
         # Save to database
         current_time = datetime.utcnow().isoformat()
@@ -75,13 +95,32 @@ def generate_summary(
             user_id=current_user.id,
             paper_id=paper.id,
             asset_type="summary",
-            params_json=json.dumps({"style": request.style, "length": request.length}),
+            params_json=params_json_str,
             content_json=json.dumps(summary),
             created_at=current_time,
             updated_at=current_time
         )
-        db.add(new_asset)
-        db.commit()
+        try:
+            db.add(new_asset)
+            db.commit()
+            print("summary stored")
+        except Exception as e:
+            db.rollback()
+            if "Duplicate entry" in str(e) or "IntegrityError" in type(e).__name__:
+                print("database insert skipped")
+                # retrieve the record
+                existing_asset = db.query(GeneratedAsset).filter(
+                    GeneratedAsset.user_id == current_user.id,
+                    GeneratedAsset.paper_id == paper.id,
+                    GeneratedAsset.asset_type == "summary",
+                    GeneratedAsset.params_json == params_json_str
+                ).first()
+                if existing_asset:
+                    return {
+                        "status": "success",
+                        "summary": json.loads(existing_asset.content_json)
+                    }
+            raise e
 
         return {
             "status": "success",

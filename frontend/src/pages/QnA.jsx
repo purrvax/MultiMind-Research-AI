@@ -18,11 +18,15 @@ const QnA = ({ activePaper }) => {
   const [isTyping, setIsTyping] = useState(false);
   
   const chatEndRef = useRef(null);
+  const loadedPaperIdRef = useRef(null);
 
   // Initialize chat with history or welcome message
   useEffect(() => {
+    if (!paper || !paper.id) return;
+    if (loadedPaperIdRef.current === paper.id) return;
+
     const fetchChatHistory = async () => {
-      if (!paper || !paper.id) return;
+      loadedPaperIdRef.current = paper.id;
       try {
         const response = await fetch(`http://localhost:8000/api/papers/${paper.id}/chat`, {
           headers: {
@@ -202,7 +206,7 @@ const QnA = ({ activePaper }) => {
             {isTyping && (
               <div className="chat-row ai">
                 <div className="chat-avatar-box">
-                  <Cpu style={{ width: '1rem', height: '1rem' }} className="animate-pulse-slow" />
+                  <Brain style={{ width: '1rem', height: '1rem' }} className="animate-pulse-slow" />
                 </div>
                 <div className="chat-bubble">
                   <div className="typing-indicators-row">
