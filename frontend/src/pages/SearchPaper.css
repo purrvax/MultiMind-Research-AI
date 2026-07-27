@@ -25,9 +25,10 @@
 .search-controls-wrapper {
   max-width: 56rem;
   margin: 0 auto 3rem;
-  padding: 1.25rem;
-  border-radius: 1.25rem;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.01), transparent);
+  padding: 1.4rem;
+  border-radius: 12px;
+  background-color: var(--surface-bg);
+  border: 1px solid var(--card-border);
 }
 
 .search-form-row {
@@ -65,7 +66,7 @@
   background-color: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--card-border);
   border-radius: 0.75rem;
-  padding: 0.875rem 1rem 0.875rem 3rem;
+  padding: 1.2rem 1rem 0.875rem 3rem;
   color: var(--text-main);
   transition: var(--transition-smooth);
 }
@@ -73,7 +74,6 @@
 .search-text-input:focus {
   outline: none;
   border-color: var(--cyan);
-  box-shadow: 0 0 0 1px var(--cyan);
 }
 
 /* Limit Selector (15%) */
@@ -118,34 +118,32 @@
 }
 
 .limit-select option {
-  background-color: #0c0d21;
+  background-color: var(--surface-bg);
   color: var(--text-main);
 }
 
 /* Search Button (15%) */
 .search-btn {
   width: 100%;
-  padding: 0.875rem;
+  padding: 1rem;
   border-radius: 0.75rem;
-  font-weight: 900;
-  color: var(--text-dark);
-  background: linear-gradient(to right, var(--blue));
+  font-weight: 700;
+  color: var(--bg-dark);
+  background: var(--cyan);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.15);
   transition: var(--transition-smooth);
   flex-shrink: 0;
-  font-size: medium;
+  font-size: 0.9375rem;
 }
 @media (min-width: 768px) {
   .search-btn { width: 15%; }
 }
 
 .search-btn:hover:not(:disabled) {
-  background: linear-gradient(to right, var(--cyan), var(--purple));
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);
+  background: var(--cyan-border-hover);
 }
 
 .search-btn:disabled {
@@ -182,8 +180,8 @@
 
 .tag-btn:hover {
   color: var(--cyan);
-  border-color: rgba(6, 182, 212, 0.3);
-  background-color: rgba(6, 182, 212, 0.05);
+  border-color: var(--cyan);
+  background-color: var(--emerald-bg);
 }
 
 /* Grid representation */
@@ -234,8 +232,6 @@
 .empty-results-card {
   text-align: center;
   padding: 4rem 1.5rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
   max-width: 36rem;
   margin: 0 auto;
 }

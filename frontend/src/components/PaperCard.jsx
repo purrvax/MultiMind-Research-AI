@@ -23,10 +23,6 @@ const PaperCard = ({ paper, onSelect }) => {
             <Calendar style={{ width: '0.875rem', height: '0.875rem' }} />
             <span>{year || "N/A"}</span>
           </span>
-          <span className="badge-citations">
-            <Bookmark style={{ width: '0.875rem', height: '0.875rem' }} />
-            <span>{citation_count? citation_count.toLocaleString() : 0} {" "}Citations</span>
-          </span>
         </div>
 
         {/* Paper Title (More Prominent & Larger) */}

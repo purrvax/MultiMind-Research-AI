@@ -17,7 +17,6 @@ const Navbar = ({ activePaper, currentUser, onLogout }) => {
             MultiMind <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>Research AI</span>
           </span>
         </Link>
-
         {/* Navigation Links */}
         <div className="navbar-links">
           <NavLink
@@ -35,20 +34,10 @@ const Navbar = ({ activePaper, currentUser, onLogout }) => {
             <span>Search Papers</span>
           </NavLink>
 
-          {activePaper && (
-            <NavLink
-              to="/workspace"
-              className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
-            >
-              <FileText style={{ width: '1rem', height: '1rem' }} />
-              <span>Workspace</span>
-            </NavLink>
-          )}
-
           {currentUser && (
             <div className="user-profile-section">
               <span className="user-greeting">
-                Hello, <span className="user-name">{currentUser.name || currentUser.email}</span>
+                Hello, {currentUser.name || currentUser.email}
               </span>
               <button onClick={onLogout} className="logout-btn" title="Sign Out">
                 <LogOut style={{ width: '0.875rem', height: '0.875rem' }} />

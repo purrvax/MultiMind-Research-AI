@@ -28,7 +28,7 @@
 }
 
 .sparkle-pill:hover {
-  border-color: rgba(6, 182, 212, 0.3);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .hero-title {
@@ -47,13 +47,12 @@
 @media (min-width: 768px) {
   .hero-title { font-size: 4.5rem; }
 }
-
 .hero-tagline {
   font-size: 1.125rem;
   font-weight: 500;
-  color: #cffafe; /* cyan-100 */
+  color: var(--cyan);
   line-height: 1.625;
-  max-width: 42rem;
+  max-width: 55rem;
   margin-bottom: 1.5rem;
 }
 @media (min-width: 768px) {
@@ -64,7 +63,7 @@
   font-size: 0.875rem;
   color: var(--text-muted);
   line-height: 1.625;
-  max-width: 36rem;
+  max-width: 55rem;
   margin-bottom: 2.5rem;
 }
 @media (min-width: 768px) {
@@ -73,30 +72,30 @@
 
 .btn-glowing-wrapper {
   display: inline-flex;
-  padding: 1px;
-  border-radius: 0.75rem;
-  background: linear-gradient(to bottom right, var(--cyan), var(--blue), var(--purple));
+  border-radius: 12px;
+  background-color: var(--cyan);
   transition: var(--transition-smooth);
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15);
+}
+
+.btn-text {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  color: rgba(255, 255, 255, 0.879);
 }
 
 .btn-glowing-wrapper:hover {
-  box-shadow: 0 4px 30px rgba(6, 182, 212, 0.35);
+  background-color: var(--cyan-border-hover);
 }
 
 .btn-glowing-inner {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 1rem 2rem;
-  background-color: var(--bg-dark);
-  border-radius: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 800;
   letter-spacing: 0.025em;
+  color: var(--bg-dark);
   transition: var(--transition-smooth);
-}
-
-.btn-glowing-wrapper:hover .btn-glowing-inner {
-  background-color: transparent;
 }

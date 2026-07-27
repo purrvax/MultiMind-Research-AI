@@ -91,6 +91,7 @@ const Summary = ({ activePaper }) => {
       {/* Summary Controls */}
       <div className="summary-controls glass">
         <div className="control-group">
+          <label htmlFor="style-select">Style:</label>
           <select
             value={explanationStyle}
             disabled={loading}
@@ -103,6 +104,7 @@ const Summary = ({ activePaper }) => {
         </div>
 
         <div className="control-group">
+          <label htmlFor="length-select">Length:</label>
           <select
             value={length}
             disabled={loading}
@@ -129,7 +131,7 @@ const Summary = ({ activePaper }) => {
       {/* Content Area */}
       {!hasGenerated ? (
         <div className='page-loading'>
-          <div className="empty-results-card glass">
+          <div className="empty-results-card">
             <h2>Generate Summary</h2>
             <p>
               Select your preferred summary style and length,
@@ -139,7 +141,7 @@ const Summary = ({ activePaper }) => {
         </div>
       ) : loading ? (
         <div className='page-loading'>
-          <div className="empty-results-card glass">
+          <div className="empty-results-card">
             <div className="spinner-container">
               <div className="loader-ring"></div>
             </div>

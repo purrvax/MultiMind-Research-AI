@@ -142,9 +142,7 @@ const Workspace_Building = ({ setActivePaper }) => {
     <div className="workspace-building">
       <div className="workspace-building-card">
         <Loader2 className="workspace-spinner" />
-
         <h1 className="workspace-title">Building Workspace...</h1>
-
         <p className="workspace-status">{messages[messageIndex]}</p>
 
         <div className="workspace-paper-section">
@@ -164,9 +162,7 @@ const Workspace_Building = ({ setActivePaper }) => {
             </a>
           )}
         </div>
-      </div>
-      <div className="exit-button">
-        <button className="stop-button" onClick={stopBuilding}>
+        <button className="paper-pdf-btn" onClick={stopBuilding}>
           Exit WorkSpace
         </button>
       </div>

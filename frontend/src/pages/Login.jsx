@@ -67,7 +67,6 @@ const Login = ({ onLoginSuccess }) => {
         if (!loginResponse.ok) {
           throw new Error("Registration succeeded but failed to auto-login. Please sign in manually.");
         }
-        
         localStorage.setItem('multimind_token', loginData.access_token);
         localStorage.setItem('multimind_user', JSON.stringify(loginData.user));
         onLoginSuccess(loginData.access_token, loginData.user);
@@ -96,12 +95,12 @@ const Login = ({ onLoginSuccess }) => {
             <Brain className="login-logo-icon animate-pulse-slow" />
           </div>
           <h1 className="login-title">
-            {isLoginMode ? 'Welcome back' : 'Create Account'}
+            {isLoginMode ? 'Continue Your Research' : 'Start Your Research'}
           </h1>
           <p className="login-subtitle">
             {isLoginMode 
-              ? 'Sign in to access your personalized workspace' 
-              : 'Join MultiMind to persist your research activities'
+              ? 'Sign in to access your personalized workspace, saved notes, and research history.' 
+              : 'Create an account to save your work, track papers, and build your research workspace.'
             }
           </p>
         </div>

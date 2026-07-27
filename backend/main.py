@@ -34,10 +34,6 @@ app.include_router(
     prefix="/api"
 )
 app.include_router(
-    papers.router,
-    prefix="/api"
-)
-app.include_router(
     notes.router,
     prefix="/api"
 )

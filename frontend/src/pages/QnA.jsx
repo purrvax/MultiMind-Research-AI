@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import NoPaperSelected from '../components/NoPaperSelected';
-import { ArrowLeft, Send, Cpu, User } from 'lucide-react';
+import { ArrowLeft, Send, Brain, User } from 'lucide-react';
 import './QnA.css';
 
 const QnA = ({ activePaper }) => {
@@ -165,7 +165,7 @@ const QnA = ({ activePaper }) => {
       {/* Page Header */}
       <div className="asset-header-section" style={{ marginBottom: '1rem', paddingBottom: '1rem' }}>
         <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          Chat: {paper.title}
+          Interactive Discussion
         </h1>
       </div>
 
@@ -184,7 +184,7 @@ const QnA = ({ activePaper }) => {
                 >
                   {/* Avatar Icon */}
                   <div className="chat-avatar-box">
-                    {isAI ? <Cpu style={{ width: '1rem', height: '1rem' }} /> : <User style={{ width: '1rem', height: '1rem' }} />}
+                    {isAI ? <Brain style={{ width: '1rem', height: '1rem' }} /> : <User style={{ width: '1rem', height: '1rem' }} />}
                   </div>
 
                   {/* Message Bubble */}

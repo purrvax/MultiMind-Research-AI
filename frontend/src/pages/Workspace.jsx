@@ -34,34 +34,34 @@ const Workspace = ({ activePaper, setActivePaper }) => {
   }
 
   const workspaceFeatures = [
-    {
-      title: "Executive Summary",
-      description: "Access synthesized key findings, core methodology, and main contributions of the paper.",
-      path: "/summary",
-      icon: FileText,
-      colorClass: "cyan",
-    },
-    {
-      title: "Structured Notes",
-      description: "Read organized literature study notes covering introduction, method details, results, and conclusions.",
-      path: "/notes",
-      icon: Edit3,
-      colorClass: "blue",
-    },
-    {
-      title: "Flashcards",
-      description: "Test your understanding of the paper's key parameters and concepts with interactive flip cards.",
-      path: "/flashcards",
-      icon: HelpCircle,
-      colorClass: "blue",
-    },
-    {
-      title: "Interactive QnA",
-      description: "Ask specific questions regarding equations, implementations, or dataset details from this paper.",
-      path: "/qna",
-      icon: MessageSquare,
-      colorClass: "cyan",
-    },
+   {
+    title: "Executive Summary",
+    description: "Get a quick overview of the paper's main idea, approach, and key takeaways.",
+    path: "/summary",
+    icon: FileText,
+    colorClass: "cyan",
+  },
+  {
+    title: "Structured Notes",
+    description: "Browse organized notes covering the problem, methodology, experiments, and findings.",
+    path: "/notes",
+    icon: Edit3,
+    colorClass: "blue",
+  },
+  {
+    title: "Flashcards",
+    description: "Review important concepts and test your understanding with study flashcards.",
+    path: "/flashcards",
+    icon: HelpCircle,
+    colorClass: "blue",
+  },
+  {
+    title: "Interactive QnA",
+    description: "Ask questions about the paper and get answers grounded in its content.",
+    path: "/qna",
+    icon: MessageSquare,
+    colorClass: "cyan",
+  },
   ];
 
   return (
@@ -85,35 +85,7 @@ const Workspace = ({ activePaper, setActivePaper }) => {
 
       {/* Selected Paper Details - Premium Hero Card */}
       <div className="workspace-paper-hero">
-        {/* Glow ambient background lights */}
-        <div 
-          style={{
-            position: 'absolute',
-            top: '-3rem',
-            right: '-3rem',
-            width: '16rem',
-            height: '16rem',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(6, 182, 212, 0.04)',
-            filter: 'blur(48px)',
-            pointerEvents: 'none',
-            zIndex: -10
-          }} 
-        />
-        <div 
-          style={{
-            position: 'absolute',
-            bottom: '-3rem',
-            left: '-3rem',
-            width: '16rem',
-            height: '16rem',
-            borderRadius: '50%',
-            backgroundColor: 'rgba(168, 85, 247, 0.04)',
-            filter: 'blur(48px)',
-            pointerEvents: 'none',
-            zIndex: -10
-          }} 
-        />
+
 
         <div className="workspace-hero-inner">
           <div className="workspace-hero-content">
@@ -122,9 +94,6 @@ const Workspace = ({ activePaper, setActivePaper }) => {
               <span className="badge-published">
                 <Calendar style={{ width: '0.875rem', height: '0.875rem' }} />
                 <span>Published {paper.year || "N.A"}</span>
-              </span>
-              <span className="badge-gray">
-                  {paper.citation_count?.toLocaleString() || 0} Citations
               </span>
             </div>
 

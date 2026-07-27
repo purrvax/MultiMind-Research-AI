@@ -2,10 +2,10 @@
 
 /* Core Variables & Tokens */
 :root {
-  --cyan: #06b6d4;
-  --purple: #a855f7;
-  --blue: #3b82f6;
-  --pink: #ec4899;
+  --cyan: #10B981;
+  --purple: #10B981;
+  --blue: #10B981;
+  --pink: #10B981;
   --yellow: #f59e0b;
   --green: #10b981;
   --card-border: rgba(255, 255, 255, 0.08);
@@ -30,15 +30,7 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* Glassmorphic Base */
-.glass {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--card-border);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-  border-radius: 1.25rem;
-}
+
 
 /* Page Header & Breadcrumbs */
 .breadcrumb-row {
@@ -88,7 +80,7 @@
 .highlights-dashboard {
   padding: 1rem 2rem;
   margin-bottom: 2rem;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.03), rgba(168, 85, 247, 0.03));
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.03), rgba(16, 185, 129, 0.03));
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -176,10 +168,10 @@
   width: 100%;
   position: sticky;
   top: 6rem;
-  border-radius: 1.25rem;
+  border-radius: 12px;
   border: 1px solid var(--card-border);
   padding: 1.5rem;
-  background: linear-gradient(to bottom, rgba(12, 13, 33, 0.6), transparent);
+  background: var(--surface-bg);
 }
 
 @media (min-width: 1024px) {
@@ -287,24 +279,24 @@
 
 /* Colors for cards */
 .note-block-card.cyan .note-block-icon-box {
-  background-color: rgba(6, 182, 212, 0.05);
+  background-color: rgba(16, 185, 129, 0.05);
   color: var(--cyan);
-  border-color: rgba(6, 182, 212, 0.15);
+  border-color: rgba(16, 185, 129, 0.15);
 }
 .note-block-card.purple .note-block-icon-box {
-  background-color: rgba(168, 85, 247, 0.05);
+  background-color: rgba(16, 185, 129, 0.05);
   color: var(--purple);
-  border-color: rgba(168, 85, 247, 0.15);
+  border-color: rgba(16, 185, 129, 0.15);
 }
 .note-block-card.blue .note-block-icon-box {
-  background-color: rgba(59, 130, 246, 0.05);
+  background-color: rgba(16, 185, 129, 0.05);
   color: var(--blue);
-  border-color: rgba(59, 130, 246, 0.15);
+  border-color: rgba(16, 185, 129, 0.15);
 }
 .note-block-card.pink .note-block-icon-box {
-  background-color: rgba(236, 72, 153, 0.05);
+  background-color: rgba(16, 185, 129, 0.05);
   color: var(--pink);
-  border-color: rgba(236, 72, 153, 0.15);
+  border-color: rgba(16, 185, 129, 0.15);
 }
 
 /* Generic lists */
@@ -439,8 +431,8 @@
   font-size: 0.8125rem;
   padding: 0.35rem 0.75rem;
   border-radius: 6px;
-  background: rgba(168, 85, 247, 0.06);
-  border: 1px solid rgba(168, 85, 247, 0.15);
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.15);
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -461,7 +453,7 @@
   top: 10px;
   bottom: 10px;
   width: 2px;
-  background: linear-gradient(to bottom, var(--cyan), rgba(255, 255, 255, 0.05));
+  background: var(--surface-bg);
 }
 
 .timeline-node {
@@ -477,7 +469,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #0c0d21;
+  background: #1F2937;
   border: 2px solid var(--cyan);
   display: flex;
   align-items: center;
@@ -620,8 +612,8 @@
 }
 
 .exam-tip-callout {
-  background: rgba(236, 72, 153, 0.04);
-  border: 1px solid rgba(236, 72, 153, 0.15);
+  background: rgba(16, 185, 129, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.15);
   color: var(--text-secondary);
 }
 
@@ -679,7 +671,7 @@
 .highlight-significance {
   padding: 0.75rem;
   border-radius: 0.5rem;
-  background: rgba(59, 130, 246, 0.04);
+  background: rgba(16, 185, 129, 0.04);
   border-left: 3px solid var(--blue);
 }
 
@@ -882,19 +874,19 @@
   background: linear-gradient(135deg, var(--cyan), var(--blue));
   border: none;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
   transition: var(--transition-smooth);
 }
 
 .btn-return-workspace:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(6, 182, 212, 0.35);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
 }
 
 /* Error card */
 .error-card {
-  border: 1px solid rgba(236, 72, 153, 0.2);
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.03), transparent);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.03), transparent);
 }
 
 .error-icon-box {

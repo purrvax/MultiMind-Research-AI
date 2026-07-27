@@ -12,14 +12,6 @@ const SearchPaper = ({ setActivePaper }) => {
   const [hasSearched, setHasSearched] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
-  const sampleTags = [
-    "Transformers",
-    "Deep Learning",
-    "Computer Vision",
-    "GANs",
-    "BERT"
-  ];
-
   // Fetch paper history on mount
   useEffect(() => {
     const fetchHistory = async () => {
@@ -43,7 +35,6 @@ const SearchPaper = ({ setActivePaper }) => {
     fetchHistory();
   }, []);
 
-  // API CALL FUNCTION
   const searchPapers = async (searchQuery, selectedLimit = limit) => {
     if (!searchQuery.trim()) {
       return;
@@ -127,14 +118,9 @@ const SearchPaper = ({ setActivePaper }) => {
             </div>
             
             <div className="search-limit-box">
-              <Sliders
-                className="search-input-icon"
-                style={{
-                  width: "1rem",
-                  height: "1rem",
-                  position: "static"
-                }}
-              />
+            <label className="limit-label">
+              Paper Count
+            </label>  
               <select
                 value={limit}
                 onChange={(e) => {
@@ -159,27 +145,13 @@ const SearchPaper = ({ setActivePaper }) => {
               Search
             </button>
           </div>
-          
-          <div className="tags-row">
-            <span className="tags-label">Trending:</span>
-            {sampleTags.map((tag, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => selectSuggestedTag(tag)}
-                className="tag-btn"
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
         </form>
       </div>
 
       <div>
         {isSearching ? (
           <div className="page-loading">
-            <div className="empty-results-card glass">
+            <div className="empty-results-card">
               <h3 className="empty-results-title">Searching papers...</h3>
               <p className="empty-results-desc">Finding relevant research papers.</p>
             </div>

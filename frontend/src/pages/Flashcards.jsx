@@ -76,6 +76,7 @@ const Flashcards = ({ activePaper }) => {
 
   <div className="flashcard-generator-row">
     <div className='control-group'> 
+    <label htmlFor="topic-select">Topic:</label>
     <select
       value={topic}
       onChange={(e) => setTopic(e.target.value)}
@@ -87,8 +88,9 @@ const Flashcards = ({ activePaper }) => {
       <option value="limitations">Limitations</option>
       <option value="experiments">Experiments</option>
     </select>
-  </div>
-  <div className='contorl-group'>
+    </div>
+  <div className='control-group'>
+    <label htmlFor="difficulty-select">Difficulty:</label>
     <select
       value={difficulty}
       onChange={(e) => setDifficulty(e.target.value)}
@@ -99,6 +101,7 @@ const Flashcards = ({ activePaper }) => {
     </select>
     </div>
     <div className='control-group'>
+      <label htmlFor="count-select">Card Count:</label>
     <select
       value={count}
       onChange={(e) => setCount(Number(e.target.value))}
@@ -124,7 +127,7 @@ const Flashcards = ({ activePaper }) => {
       {/* Grid of Flashcards */}
       {loading ? (
         <div className='loading-page'>
-        <div className="empty-results-card glass">
+        <div className="empty-results-card">
           <h3 className="empty-results-title">
             Generating Flashcards...
           </h3>
@@ -146,7 +149,7 @@ const Flashcards = ({ activePaper }) => {
         </div>
       ) : !hasGenerated ? (
         <div className='loading-page'>
-        <div className="empty-results-card glass">
+        <div className="empty-results-card">
           <h3 className="empty-results-title">
             Generate Flashcards
           </h3>
