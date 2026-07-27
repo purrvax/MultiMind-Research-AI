@@ -7,14 +7,17 @@ from sqlalchemy.orm import sessionmaker
 # Load environment variables
 load_dotenv()
 
-MYSQL_HOST = os.getenv("MYSQL_HOST", "127.0.0.1")
-MYSQL_PORT = os.getenv("MYSQL_PORT", "3306")
-MYSQL_USER = os.getenv("MYSQL_USER", "root")
-MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "395641Ps!")
-MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "multimind_research_ai")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    MYSQL_HOST = os.getenv("MYSQL_HOST", "127.0.0.1")
+    MYSQL_PORT = os.getenv("MYSQL_PORT", "3306")
+    MYSQL_USER = os.getenv("MYSQL_USER", "root")
+    MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "395641Ps!")
+    MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "multimind_research_ai")
 
 # Construct connection URL
-DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+    DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
 
 # Create engine
 engine = create_engine(
@@ -42,6 +45,7 @@ def get_db():
 
 class User(Base):
     __tablename__ = "users"
+    
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     email = Column(String(255), unique=True, nullable=False)
     name = Column(String(255), nullable=True)

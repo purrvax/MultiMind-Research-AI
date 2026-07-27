@@ -34,19 +34,35 @@ const Notes = ({ activePaper }) => {
     return <NoPaperSelected />;
   }
 
+  const paperUrl = paper?.pdf_url || paper?.paper_url;
+
   useEffect(() => {
+    let isMounted = true;
+
     const fetchNotes = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
+        const token = localStorage.getItem('multimind_token');
+        if (!token) {
+          throw new Error('Please sign in again to view notes.');
+        }
+
+        if (!paperUrl) {
+          throw new Error('No paper source was found for this workspace item.');
+        }
+
         const response = await fetch(
           "http://localhost:8000/api/notes",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${localStorage.getItem('multimind_token')}`
+              "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
-              paper_url: paper.pdf_url || paper.paper_url
+              paper_url: paperUrl
             })
           }
         );
@@ -57,18 +73,27 @@ const Notes = ({ activePaper }) => {
           throw new Error(resData.detail || "Failed to retrieve notes");
         }
 
-        // resData should contain: { notes, highlights, status }
-        setData(resData);
+        if (isMounted) {
+          setData(resData);
+        }
       } catch (error) {
         console.error(error);
-        setError(error.message);
+        if (isMounted) {
+          setError(error.message);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchNotes();
-  }, [paper]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [paperUrl]);
 
   const toggleAnswer = (idx) => {
     setRevealedAnswers((prev) => ({
@@ -79,31 +104,43 @@ const Notes = ({ activePaper }) => {
 
   if (loading) {
     return (
-      <div className='loading-page'>
-      <div className="empty-results-card">
-        <div className="spinner-container">
-          <div className="loader-ring"></div>
+      <div className="notes-page-wrapper notes-state-shell">
+        <div className="empty-results-card">
+          <div className="spinner-container">
+            <div className="loader-ring"></div>
+          </div>
+          <h2>Generating Study Notes...</h2>
+          <p className="loading-subtext">Analyzing paper mechanics, terminology, and synthesizing revision questions...</p>
         </div>
-        <h2>Generating Study Notes...</h2>
-        <p className="loading-subtext">Analyzing paper mechanics, terminology, and synthesizing revision questions...</p>
-      </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className='loading-page'>
-      <div className="empty-results-card error-card glass">
-        <div className="error-icon-box">
-          <AlertTriangle style={{ width: '2rem', height: '2rem', color: 'var(--pink)' }} />
+      <div className="notes-page-wrapper notes-state-shell">
+        <div className="empty-results-card error-card glass">
+          <div className="error-icon-box">
+            <AlertTriangle style={{ width: '2rem', height: '2rem', color: 'var(--pink)' }} />
+          </div>
+          <h2>Failed to load notes</h2>
+          <p>{error}</p>
+          <div className="summary-footer-actions" style={{ justifyContent: 'center', gap: '0.75rem', marginTop: '1.5rem' }}>
+            <button
+              type="button"
+              className="btn-return-workspace"
+              onClick={() => {
+                setError(null);
+                setLoading(true);
+              }}
+            >
+              Try Again
+            </button>
+            <Link to="/workspace" state={{ paper }} className="btn-return-workspace">
+              Back to Workspace
+            </Link>
+          </div>
         </div>
-        <h2>Failed to load notes</h2>
-        <p>{error}</p>
-        <Link to="/workspace" state={{ paper }} className="btn-return-workspace" style={{ marginTop: '1.5rem', display: 'inline-block' }}>
-          Back to Workspace
-        </Link>
-      </div>
       </div>
     );
   }
