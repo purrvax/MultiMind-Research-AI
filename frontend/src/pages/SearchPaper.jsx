@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PaperCard from '../components/PaperCard';
 import { Search, Sliders } from 'lucide-react';
+import { API_URL } from '../config/api';
 import './SearchPaper.css';
 
 const SearchPaper = ({ setActivePaper }) => {
@@ -17,7 +18,7 @@ const SearchPaper = ({ setActivePaper }) => {
     const fetchHistory = async () => {
       setLoadingHistory(true);
       try {
-        const response = await fetch("http://localhost:8000/api/papers/history", {
+        const response = await fetch(`${API_URL}/api/papers/history`, {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem('multimind_token')}`
           }
@@ -49,7 +50,7 @@ const SearchPaper = ({ setActivePaper }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/search-papers",
+        `${API_URL}/api/search-papers`,
         {
           method: "POST",
           headers: {

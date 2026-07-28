@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, Brain, ArrowRight, Loader2 } from 'lucide-react';
+import { API_URL } from '../config/api';
 import './Login.css';
 
 const Login = ({ onLoginSuccess }) => {
@@ -21,8 +22,8 @@ const Login = ({ onLoginSuccess }) => {
     setIsLoading(true);
 
     const url = isLoginMode 
-      ? 'http://localhost:8000/api/auth/login' 
-      : 'http://localhost:8000/api/auth/register';
+      ? `${API_URL}/api/auth/login` 
+      : `${API_URL}/api/auth/register`;
 
     const payload = isLoginMode 
       ? { email, password } 
@@ -55,7 +56,7 @@ const Login = ({ onLoginSuccess }) => {
         setPassword(password);
         
         // Trigger login
-        const loginResponse = await fetch('http://localhost:8000/api/auth/login', {
+        const loginResponse = await fetch(`${API_URL}/api/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

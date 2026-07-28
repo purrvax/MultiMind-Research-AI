@@ -6,6 +6,7 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import NoPaperSelected from '../components/NoPaperSelected';
 import { ArrowLeft, Download, RefreshCw } from 'lucide-react';
+import { API_URL } from '../config/api';
 import './Summary.css';
 
 const Summary = ({ activePaper }) => {
@@ -27,7 +28,7 @@ const Summary = ({ activePaper }) => {
       setError(null);
       setHasGenerated(true);
       const response = await fetch(
-        "http://localhost:8000/api/summary",
+        `${API_URL}/api/summary`,
         {
           method: "POST",
           headers: {

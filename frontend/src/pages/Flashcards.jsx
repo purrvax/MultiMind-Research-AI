@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import FlashCard from '../components/FlashCard';
 import NoPaperSelected from '../components/NoPaperSelected';
 import { ArrowLeft, Layers, Sparkles, Award } from 'lucide-react';
+import { API_URL } from '../config/api';
 import './Flashcards.css';
 
 const Flashcards = ({ activePaper }) => {
@@ -23,7 +24,7 @@ const Flashcards = ({ activePaper }) => {
       setLoading(true);
       setHasGenerated(true);
       const response = await fetch(
-        "http://localhost:8000/api/flashcards",
+        `${API_URL}/api/flashcards`,
         {
           method: "POST",
           headers: {

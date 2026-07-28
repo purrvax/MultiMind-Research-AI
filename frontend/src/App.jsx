@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import FloatingBackground from './components/FloatingBackground';
+import { API_URL } from './config/api';
 
 // Pages
 import Home from './pages/Home';
@@ -45,7 +46,7 @@ function App() {
         console.error("Failed to parse saved user", e);
       }
 
-      fetch('http://localhost:8000/api/auth/me', {
+      fetch(`${API_URL}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${savedToken}`
         }

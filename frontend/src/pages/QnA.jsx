@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import NoPaperSelected from '../components/NoPaperSelected';
 import { ArrowLeft, Send, Brain, User } from 'lucide-react';
+import { API_URL } from '../config/api';
 import './QnA.css';
 
 const QnA = ({ activePaper }) => {
@@ -28,7 +29,7 @@ const QnA = ({ activePaper }) => {
     const fetchChatHistory = async () => {
       loadedPaperIdRef.current = paper.id;
       try {
-        const response = await fetch(`http://localhost:8000/api/papers/${paper.id}/chat`, {
+        const response = await fetch(`${API_URL}/api/papers/${paper.id}/chat`, {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem('multimind_token')}`
           }
@@ -99,7 +100,7 @@ const QnA = ({ activePaper }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/qna",
+        `${API_URL}/api/qna`,
         {
           method: "POST",
           headers: {

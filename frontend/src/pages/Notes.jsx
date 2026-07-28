@@ -19,6 +19,7 @@ import {
   ChevronUp,
   Cpu
 } from 'lucide-react';
+import { API_URL } from '../config/api';
 import './Notes.css';
 
 const Notes = ({ activePaper }) => {
@@ -54,7 +55,7 @@ const Notes = ({ activePaper }) => {
         }
 
         const response = await fetch(
-          "http://localhost:8000/api/notes",
+          `${API_URL}/api/notes`,
           {
             method: "POST",
             headers: {

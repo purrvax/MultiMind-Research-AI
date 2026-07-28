@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Loader2, ExternalLink } from "lucide-react";
+import { API_URL } from '../config/api';
 import "./Workspace_Building.css";
 
 const messages = [
@@ -28,7 +29,7 @@ const Workspace_Building = ({ setActivePaper }) => {
 
     try {
       console.log("Cancelling task:", taskId);
-      await fetch(`http://127.0.0.1:8000/api/cancel-analysis/${taskId}`, {
+      await fetch(`${API_URL}/api/cancel-analysis/${taskId}`, {
         method: "POST"
       });
     } catch (error) {
@@ -63,7 +64,7 @@ const Workspace_Building = ({ setActivePaper }) => {
 
     const buildWorkspace = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/analyze-paper", {
+        const response = await fetch(`${API_URL}/api/analyze-paper`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
