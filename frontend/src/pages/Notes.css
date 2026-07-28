@@ -28,10 +28,11 @@
 .notes-page-wrapper {
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
+  flex : 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
-
-
 /* Page Header & Breadcrumbs */
 .breadcrumb-row {
   margin-bottom: 1.5rem;
