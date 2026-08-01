@@ -15,11 +15,12 @@
   --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.loading-page{
-  min-height: 100vh;
+.notes-state-shell {
+  min-height: calc(100vh - 70px); /* adjust navbar height */
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 .empty-results-card {
   max-width: 700px;
@@ -28,10 +29,6 @@
 .notes-page-wrapper {
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
-  flex : 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 /* Page Header & Breadcrumbs */
 .breadcrumb-row {
