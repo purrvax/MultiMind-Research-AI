@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Loader2, ExternalLink } from "lucide-react";
 import { API_URL } from '../config/api';
-import "./Workspace_Building.css";
+import './WorkSpace_building.css';
 
 const messages = [
   "Extracting content...",

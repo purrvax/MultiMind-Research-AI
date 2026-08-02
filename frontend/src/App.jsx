@@ -8,7 +8,7 @@ import { API_URL } from './config/api';
 import Home from './pages/Home';
 import SearchPaper from './pages/SearchPaper';
 import Workspace from './pages/Workspace';
-import Workspace_Building from './pages/Workspace_building';
+import Workspace_Building from './pages/WorkSpace_building';
 import Summary from './pages/Summary';
 import Notes from './pages/Notes';
 import Flashcards from './pages/Flashcards';
