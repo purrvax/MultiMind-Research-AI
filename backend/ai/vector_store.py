@@ -4,9 +4,9 @@ import hashlib
 import json
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
+from storage_config import CHROMA_DIR, DATA_DIR
 
-
-DEFAULT_PERSIST_DIRECTORY = "chroma_db"
+DEFAULT_PERSIST_DIRECTORY = CHROMA_DIR
 DEFAULT_COLLECTION_NAME = "research_papers"
 
 
@@ -225,7 +225,7 @@ def get_paper_persist_directory(pdf_url: str):
 
     paper_id = hashlib.md5(pdf_url.encode("utf-8")).hexdigest()
 
-    return f"data/vectorstores/{paper_id}"
+    return f"{CHROMA_DIR}/{paper_id}"
 
 # -------------------------------------------------
 # STABLE CHUNK ID

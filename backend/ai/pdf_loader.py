@@ -1,10 +1,11 @@
 import os
 import requests
 from langchain_community.document_loaders import PyMuPDFLoader
+from storage_config import UPLOADS_DIR
 
 def download_pdf(
     pdf_url: str,
-    save_dir: str = "uploads",
+    save_dir: str = UPLOADS_DIR,
     timeout: int = 30
 ):
 

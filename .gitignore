@@ -12,13 +12,11 @@ env/
 .env
 
 # ChromaDB / Vector Stores
-chroma_db/
-data/
-*.sqlite3
-
-# Uploaded PDFs
+storage/
 uploads/
-*.pdf
+data/
+docstore/
+chroma/
 
 # IDE
 .vscode/
