@@ -1,9 +1,11 @@
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
+import os
+
 def get_embedding_model():
-    embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        encode_kwargs={
-            "normalize_embeddings": True
-        }
+    embedding_model = HuggingFaceEndpointEmbeddings(
+        model="BAAI/bge-small-en-v1.5",
+        huggingfacehub_api_token=os.getenv(
+            "HUGGINGFACEHUB_API_TOKEN"
+        )
     )
-    return embeddings
+    return embedding_model
