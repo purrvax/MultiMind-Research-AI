@@ -59,15 +59,15 @@ class User(Base):
 class Paper(Base):
     __tablename__ = "papers"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    paper_url = Column(String(1024), unique=True, nullable=False)
+    paper_url = Column(Text, nullable=False)
     paper_hash = Column(String(32), unique=True, nullable=False)
     title = Column(Text, nullable=True)
     authors = Column(Text, nullable=True)
     abstract = Column(Text, nullable=True)
     published_date = Column(String(64), nullable=True)
     source = Column(String(255), nullable=True)
-    vector_store_path = Column(String(1024), nullable=True)
-    paper_understanding_path = Column(String(1024), nullable=True)
+    vector_store_path = Column(Text, nullable=True)
+    paper_understanding_path = Column(Text, nullable=True)
     processing_status = Column(String(32), nullable=False, default="pending")
     created_at = Column(String(64), nullable=False)
     updated_at = Column(String(64), nullable=False)
