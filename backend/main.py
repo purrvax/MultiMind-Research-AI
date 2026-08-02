@@ -2,6 +2,7 @@ import os
 import storage_config
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from database import Base, engine
 
 from apis import papers
 from apis import analyze
@@ -10,15 +11,21 @@ from apis import QnA
 from apis import summary
 from apis import notes
 from apis import auth
+
+
+
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL],
+    allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 app.include_router(
